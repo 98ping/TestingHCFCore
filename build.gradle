@@ -1,0 +1,29 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.5.31'
+    id "com.github.johnrengelman.shadow" version "5.2.0"
+}
+
+group 'me.ninetyeightping'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+    maven {
+        url "https://hub.spigotmc.org/nexus/content/repositories/snapshots/"
+    }
+    maven {
+        url "https://oss.sonatype.org/content/groups/public/"
+    }
+    mavenLocal()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile 'org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT'
+    compile 'org.mongodb:mongo-java-driver:3.12.10'
+    compileOnly 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+    compile 'com.google.code.gson:gson:2.7'
+    implementation 'com.github.Revxrsal:Lamp:1.8'
+}
