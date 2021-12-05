@@ -3,7 +3,6 @@ package me.ninetyeightping.hcf.players
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.Filters
 import me.ninetyeightping.hcf.HCF
-import me.ninetyeightping.hcf.team.Team
 import org.bson.Document
 import org.bukkit.entity.Player
 import java.util.concurrent.ForkJoinPool

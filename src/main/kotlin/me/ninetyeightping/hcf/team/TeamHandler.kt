@@ -14,7 +14,7 @@ class TeamHandler {
     var teams = arrayListOf<Team>()
 
     init {
-        for (document in mongoCollection.find()) teams.add(serialize(document))
+        for (document in mongoCollection.find()) teams.add(deserialize(document))
     }
 
     fun byPlayer(player: Player) : Team {
@@ -27,25 +27,25 @@ class TeamHandler {
                 it.save()
             }
             teams.clear()
-            for (document in mongoCollection.find()) teams.add(serialize(document))
+            for (document in mongoCollection.find()) teams.add(deserialize(document))
         }
     }
 
     fun createTeam(team: Team) {
-        mongoCollection.insertOne(deserialize(team))
+        mongoCollection.insertOne(serialize(team))
         saveAndPull()
     }
 
     fun save(team: Team) {
-        mongoCollection.replaceOne(Filters.eq("id", team.id), deserialize(team))
+        mongoCollection.replaceOne(Filters.eq("id", team.id), serialize(team))
         saveAndPull()
     }
 
-    fun serialize(document: Document) : Team {
+    fun deserialize(document: Document) : Team {
         return HCF.instance.gson.fromJson(document.toJson(), Team::class.java)
     }
 
-    fun deserialize(team: Team) : Document {
+    fun serialize(team: Team) : Document {
         return Document.parse(team.construct())
     }
 
