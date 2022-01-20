@@ -4,14 +4,18 @@ import me.ninetyeightping.hcf.HCF
 import org.bukkit.scoreboard.Team
 
 data class HCFPlayer(
-    val uuid: String,
-    val name: String,
-    val balance: Double,
-    val team: String,
+    var uuid: String,
+    var name: String,
+    var balance: Double,
+    var team: String,
 ) {
 
 
     fun construct() : String {
         return HCF.instance.gson.toJson(this)
+    }
+
+    fun push() {
+        HCF.instance.hcfPlayerHandler.save(this)
     }
 }

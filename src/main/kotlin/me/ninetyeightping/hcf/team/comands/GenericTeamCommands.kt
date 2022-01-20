@@ -2,59 +2,44 @@ package me.ninetyeightping.hcf.team.comands
 
 import me.ninetyeightping.hcf.HCF
 import me.ninetyeightping.hcf.team.Team
+import me.ninetyeightping.hcf.team.types.FactionType
 import me.ninetyeightping.hcf.util.Chat
+import me.vaperion.blade.annotation.Command
+import me.vaperion.blade.annotation.Name
+import me.vaperion.blade.annotation.Sender
 import org.bukkit.entity.Player
-import revxrsal.commands.annotation.*
-import revxrsal.commands.bukkit.BukkitCommandActor
 
 
-@Command("team")
 class GenericTeamCommands {
 
-    @Subcommand("info")
-    @Usage("info <player>")
-    fun teamInfo(actor: BukkitCommandActor, player: Player) {
-        if (!actor.isPlayer) return
-        if (player == null) {
-            actor.reply(Chat.format("&cInvalid player"))
-            return
-        }
+    @Command(value = ["team who", "f who", "t who"])
+    fun teamInfo(@Sender sender: Player, @Name("target")player: Player) {
 
         val team = HCF.instance.teamHandler.byPlayer(player)
         if (team == null) {
-            actor.reply(Chat.format("&cTeam not found!"))
+            sender.sendMessage(Chat.format("&cTeam not found!"))
             return
         }
 
-        val sendTo = actor.asPlayer;
-        sendTo?.sendMessage("&b== &e" + team.displayName + "&b==")
-        sendTo?.sendMessage("&eBalance: &f" + team.balance)
+        val sendTo = sender
+        sendTo.sendMessage(Chat.format("&9${team.displayName}"))
+        sendTo.sendMessage(Chat.format("&eBalance: &f" + team.balance))
+        sendTo.sendMessage(Chat.format("&eMembers: &f" + team.getNamedMembers().toString().replace("[", "").replace("]", "")))
 
     }
 
-    @Subcommand("create")
-    @Usage("create <name>")
-    @Description("Creates a team with a provided name")
-    fun createTeam(actor: BukkitCommandActor, name: String) {
-        if (!actor.isPlayer) {
-            actor.reply(Chat.format("&cYou are not a player so you are unable to use this command"))
-            return
-        }
+    @Command(value = ["team create", "f create", "t create"])
+    fun createTeam(@Sender player: Player, @Name("name")name: String) {
 
-        val player = actor.asPlayer
-        if (player == null) {
-            actor.reply("&cNull player. Returning")
-            return
-        }
 
-        val team = Team(name.toLowerCase(), name, ArrayList(), player.uniqueId.toString(), 0.0, ArrayList(), false)
+        val team = Team(name.toLowerCase(), name, ArrayList(), player.uniqueId.toString(), 0.0, ArrayList(), false, ArrayList(), FactionType.PLAYER)
 
         //add creator to the list
         team.members.add(player.uniqueId.toString())
 
 
         HCF.instance.teamHandler.createTeam(team)
-        actor.reply(Chat.format("&eCreated a team with the name of $name"))
+        player.sendMessage(Chat.format("&eCreated a team with the name of $name"))
 
     }
 

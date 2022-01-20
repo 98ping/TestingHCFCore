@@ -2,9 +2,11 @@ package me.ninetyeightping.hcf.players
 
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.Filters
+import com.mongodb.client.model.UpdateOptions
 import me.ninetyeightping.hcf.HCF
 import org.bson.Document
 import org.bukkit.entity.Player
+import java.util.*
 import java.util.concurrent.ForkJoinPool
 
 class HCFPlayerHandler {
@@ -17,8 +19,13 @@ class HCFPlayerHandler {
         for (document in mongoCollection.find()) hcfplayers.add(serialize(document))
     }
 
-    fun byPlayer(player: Player) : HCFPlayer {
-        return hcfplayers.stream().filter { it.uuid.equals(player.uniqueId.toString()) }.findFirst().orElse(null)
+
+    fun byPlayer(player: Player) : HCFPlayer? {
+        return hcfplayers.stream().filter { it.uuid == player.uniqueId.toString() }.findFirst().orElse(null)
+    }
+
+    fun byUUID(uuid: UUID) : HCFPlayer? {
+        return hcfplayers.stream().filter { it.uuid == uuid.toString() }.findFirst().orElse(null)
     }
 
     fun pull() {
@@ -29,12 +36,18 @@ class HCFPlayerHandler {
     }
 
     fun createPlayer(hcfplayer: HCFPlayer) {
-        mongoCollection.insertOne(deserialize(hcfplayer))
+        save(hcfplayer)
         pull()
     }
 
     fun save(hcfplayer: HCFPlayer) {
-        mongoCollection.replaceOne(Filters.eq("uuid", hcfplayer.uuid), deserialize(hcfplayer))
+        val doc = Document.parse(hcfplayer.construct())
+        doc.remove("_id")
+
+        val query = Document("_id", hcfplayer.uuid)
+        val finaldoc = Document("\$set", doc)
+
+        mongoCollection.updateOne(query, finaldoc, UpdateOptions().upsert(true))
         pull()
     }
 
@@ -42,8 +55,5 @@ class HCFPlayerHandler {
         return HCF.instance.gson.fromJson(document.toJson(), HCFPlayer::class.java)
     }
 
-    fun deserialize(hcfplayer: HCFPlayer) : Document {
-        return Document.parse(hcfplayer.construct())
-    }
 
 }

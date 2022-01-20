@@ -2,10 +2,12 @@ package me.ninetyeightping.hcf.team
 
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.Filters
+import com.mongodb.client.model.UpdateOptions
 import me.ninetyeightping.hcf.HCF
 import org.bson.Document
 import org.bukkit.entity.Player
 import java.util.concurrent.ForkJoinPool
+import javax.print.Doc
 
 class TeamHandler {
 
@@ -17,7 +19,7 @@ class TeamHandler {
         for (document in mongoCollection.find()) teams.add(deserialize(document))
     }
 
-    fun byPlayer(player: Player) : Team {
+    fun byPlayer(player: Player) : Team? {
         return teams.stream().filter { it.members.contains(player.uniqueId.toString()) }.findFirst().orElse(null)
     }
 
@@ -32,12 +34,18 @@ class TeamHandler {
     }
 
     fun createTeam(team: Team) {
-        mongoCollection.insertOne(serialize(team))
+        save(team)
         saveAndPull()
     }
 
     fun save(team: Team) {
-        mongoCollection.replaceOne(Filters.eq("id", team.id), serialize(team))
+        val doc = Document.parse(team.construct())
+        doc.remove("_id")
+
+        val query = Document("_id", team.id)
+        val finaldoc = Document("\$set", doc)
+
+        mongoCollection.updateOne(query, finaldoc, UpdateOptions().upsert(true))
         saveAndPull()
     }
 
@@ -45,8 +53,5 @@ class TeamHandler {
         return HCF.instance.gson.fromJson(document.toJson(), Team::class.java)
     }
 
-    fun serialize(team: Team) : Document {
-        return Document.parse(team.construct())
-    }
 
 }
