@@ -9,11 +9,15 @@ import com.mongodb.client.MongoDatabase
 import io.github.thatkawaiisam.assemble.Assemble
 import io.github.thatkawaiisam.assemble.AssembleStyle
 import me.ninetyeightping.hcf.board.AssembleBoard
+import me.ninetyeightping.hcf.events.sotw.SOTWHandler
+import me.ninetyeightping.hcf.events.sotw.commands.SOTWCommands
 import me.ninetyeightping.hcf.players.HCFPlayerHandler
 import me.ninetyeightping.hcf.players.commands.EconomyCommands
 import me.ninetyeightping.hcf.players.listeners.HCFPlayerListener
 import me.ninetyeightping.hcf.team.TeamHandler
 import me.ninetyeightping.hcf.team.claims.LandBoard
+import me.ninetyeightping.hcf.team.claims.listener.ClaimListener
+import me.ninetyeightping.hcf.team.claims.listener.LandBoardListener
 import me.ninetyeightping.hcf.team.comands.GenericTeamCommands
 import me.ninetyeightping.hcf.timers.TimerHandler
 import me.ninetyeightping.hcf.util.Cuboid
@@ -22,7 +26,6 @@ import me.vaperion.blade.Blade
 import me.vaperion.blade.bindings.impl.BukkitBindings
 import me.vaperion.blade.container.impl.BukkitCommandContainer
 import org.bukkit.plugin.java.JavaPlugin
-import java.util.concurrent.ForkJoinPool
 
 class HCF : JavaPlugin() {
 
@@ -43,6 +46,7 @@ class HCF : JavaPlugin() {
     lateinit var teamHandler: TeamHandler
     lateinit var hcfPlayerHandler: HCFPlayerHandler
     lateinit var timerHandler: TimerHandler
+    lateinit var sotwHandler: SOTWHandler
 
     lateinit var landBoard: LandBoard
 
@@ -57,6 +61,7 @@ class HCF : JavaPlugin() {
         teamHandler = TeamHandler()
         hcfPlayerHandler = HCFPlayerHandler()
         timerHandler = TimerHandler()
+        sotwHandler = SOTWHandler()
 
         landBoard = LandBoard()
 
@@ -65,12 +70,14 @@ class HCF : JavaPlugin() {
         assemble.assembleStyle = AssembleStyle.VIPER
 
         server.pluginManager.registerEvents(HCFPlayerListener(), this)
+        server.pluginManager.registerEvents(ClaimListener(), this)
+        server.pluginManager.registerEvents(LandBoardListener(), this)
 
         //commands
         Blade.of().fallbackPrefix("HCF")
             .containerCreator(BukkitCommandContainer.CREATOR)
             .binding(BukkitBindings()).build()
-            .register(GenericTeamCommands()).register(EconomyCommands())
+            .register(GenericTeamCommands()).register(EconomyCommands()).register(SOTWCommands())
 
 
     }

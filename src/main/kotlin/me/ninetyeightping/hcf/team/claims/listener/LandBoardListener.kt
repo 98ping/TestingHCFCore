@@ -1,8 +1,6 @@
 package me.ninetyeightping.hcf.team.claims.listener
 
 import me.ninetyeightping.hcf.HCF
-import me.ninetyeightping.hcf.team.claims.Claim
-import me.ninetyeightping.hcf.team.claims.LandBoard
 import me.ninetyeightping.hcf.util.Chat
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -15,10 +13,10 @@ class LandBoardListener : Listener {
         val player = event.player;
 
         if (HCF.instance.landBoard.claimByLocation(event.to) != null && HCF.instance.landBoard.claimByLocation(event.from) == null) {
-
+            println("a")
             val toClaim = HCF.instance.landBoard.claimByLocation(event.to)
 
-            player.sendMessage(Chat.format("&eNow Entering: " + toClaim!!.owningTeam.globalDisplay(player)))
+            player.sendMessage(Chat.format("&eNow Entering: " + HCF.instance.landBoard.teamByClaim(toClaim!!)!!.globalDisplay(player)))
             if (HCF.instance.landBoard.isWarzone(event.from)) {
                 player.sendMessage(Chat.format("&eNow Leaving: &cWarzone"))
             } else {
@@ -30,16 +28,18 @@ class LandBoardListener : Listener {
 
 
         if (HCF.instance.landBoard.claimByLocation(event.to) != null && HCF.instance.landBoard.claimByLocation(event.from) != null) {
+            println("b")
             val toClaim = HCF.instance.landBoard.claimByLocation(event.to)
             val fromClaim = HCF.instance.landBoard.claimByLocation(event.from)
 
             if (toClaim != fromClaim) {
-                player.sendMessage(Chat.format("&eNow Entering: " + toClaim!!.owningTeam.globalDisplay(player)))
-                player.sendMessage(Chat.format("&eNow Leaving: " + fromClaim!!.owningTeam.globalDisplay(player)))
+                player.sendMessage(Chat.format("&eNow Entering: " + HCF.instance.landBoard.teamByClaim(toClaim!!)!!.globalDisplay(player)))
+                player.sendMessage(Chat.format("&eNow Leaving: " + HCF.instance.landBoard.teamByClaim(fromClaim!!)!!.globalDisplay(player)))
             }
         }
 
         if (HCF.instance.landBoard.claimByLocation(event.to) == null && HCF.instance.landBoard.claimByLocation(event.from) != null) {
+            println("c")
             val fromClaim = HCF.instance.landBoard.claimByLocation(event.from)
 
             if (HCF.instance.landBoard.isWarzone(event.to)) {
@@ -47,7 +47,7 @@ class LandBoardListener : Listener {
             } else {
                 player.sendMessage(Chat.format("&eNow Entering: &2Wilderness"))
             }
-            player.sendMessage(Chat.format("&eNow Leaving: " + fromClaim!!.owningTeam.globalDisplay(player)))
+            player.sendMessage(Chat.format("&eNow Leaving: " + HCF.instance.landBoard.teamByClaim(fromClaim!!)!!.globalDisplay(player)))
         }
     }
 

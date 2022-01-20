@@ -1,7 +1,6 @@
 package me.ninetyeightping.hcf.board
 
 import io.github.thatkawaiisam.assemble.AssembleAdapter
-import io.github.thatkawaiisam.assemble.AssembleBoard
 import me.ninetyeightping.hcf.HCF
 import me.ninetyeightping.hcf.util.Chat
 import me.ninetyeightping.hcf.util.TimeUtils
@@ -16,8 +15,12 @@ class AssembleBoard : AssembleAdapter {
     override fun getLines(player: Player?): MutableList<String> {
         val lines = arrayListOf<String>()
         lines.add("&7&m--------------------")
-        if (HCF.instance.timerHandler.enderpearlTimer.hasCooldown(player!!)) {
+        lines.add("&6&lClaim: &r" + HCF.instance.landBoard.getClaimForScoreboard(player!!))
+        if (HCF.instance.timerHandler.enderpearlTimer.hasCooldown(player)) {
             lines.add("&9Enderpearl: &f" + getPearlScore(player))
+        }
+        if (HCF.instance.sotwHandler.serverIsOnSOTWTimer()) {
+            lines.add("&a&lSOTW: " + getTimerScore(HCF.instance.sotwHandler.globalDuration))
         }
         lines.add("&c&7&m--------------------")
         return lines;
@@ -29,5 +32,14 @@ class AssembleBoard : AssembleAdapter {
             return TimeUtils.formatIntoMMSS((diff / 1000L).toInt())
         }
         return null
+    }
+
+    fun getTimerScore(time: Long): String? {
+        val diff = time - System.currentTimeMillis()
+        return if (diff > 0) {
+            TimeUtils.formatIntoAbbreviatedString((diff / 1000L).toInt())
+        } else {
+            null
+        }
     }
 }

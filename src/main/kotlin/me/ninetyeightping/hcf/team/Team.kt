@@ -1,25 +1,24 @@
 package me.ninetyeightping.hcf.team
 
-import lombok.AllArgsConstructor
 import me.ninetyeightping.hcf.HCF
 import me.ninetyeightping.hcf.players.HCFPlayer
-import me.ninetyeightping.hcf.team.claims.Claim
 import me.ninetyeightping.hcf.team.types.FactionType
+import me.ninetyeightping.hcf.util.Cuboid
 import org.bukkit.entity.Player
 import java.util.*
 import java.util.stream.Collectors
 import kotlin.collections.ArrayList
 
-@AllArgsConstructor
 data class Team(
     val id: String,
     val displayName: String,
     val members: ArrayList<String>,
+    val subLeaders: ArrayList<String>,
     val leader: String,
     val balance: Double,
     val pendingInvites: ArrayList<String>,
     val needsSave: Boolean,
-    val claims: ArrayList<Claim>,
+    val claims: ArrayList<Cuboid>,
     val teamType: FactionType
 ) {
 
