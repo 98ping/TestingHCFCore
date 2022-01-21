@@ -9,6 +9,8 @@ import com.mongodb.client.MongoDatabase
 import io.github.thatkawaiisam.assemble.Assemble
 import io.github.thatkawaiisam.assemble.AssembleStyle
 import me.ninetyeightping.hcf.board.AssembleBoard
+import me.ninetyeightping.hcf.events.koth.commands.KothGenericCommands
+import me.ninetyeightping.hcf.events.koth.types.KothHandler
 import me.ninetyeightping.hcf.events.sotw.SOTWHandler
 import me.ninetyeightping.hcf.events.sotw.commands.SOTWCommands
 import me.ninetyeightping.hcf.players.HCFPlayerHandler
@@ -32,6 +34,7 @@ import me.vaperion.blade.container.impl.BukkitCommandContainer
 import org.bukkit.Location
 import org.bukkit.plugin.java.JavaPlugin
 
+
 class HCF : JavaPlugin() {
 
     companion object {
@@ -53,6 +56,7 @@ class HCF : JavaPlugin() {
     lateinit var hcfPlayerHandler: HCFPlayerHandler
     lateinit var timerHandler: TimerHandler
     lateinit var sotwHandler: SOTWHandler
+    lateinit var kothHandler: KothHandler
 
     lateinit var landBoard: LandBoard
 
@@ -68,6 +72,7 @@ class HCF : JavaPlugin() {
         hcfPlayerHandler = HCFPlayerHandler()
         timerHandler = TimerHandler()
         sotwHandler = SOTWHandler()
+        kothHandler = KothHandler()
 
         landBoard = LandBoard()
 
@@ -81,11 +86,17 @@ class HCF : JavaPlugin() {
         server.pluginManager.registerEvents(GenericTimerListener(), this)
         server.pluginManager.registerEvents(SystemTeamClaimListener(), this)
 
+
+
         //commands
         Blade.of().fallbackPrefix("HCF")
             .containerCreator(BukkitCommandContainer.CREATOR)
             .binding(BukkitBindings()).build()
-            .register(GenericTeamCommands()).register(EconomyCommands()).register(SOTWCommands()).register(SystemTeamCommands())
+            .register(GenericTeamCommands())
+            .register(EconomyCommands())
+            .register(SOTWCommands())
+            .register(SystemTeamCommands())
+            .register(KothGenericCommands())
 
 
     }

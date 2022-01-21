@@ -29,6 +29,11 @@ class AssembleBoard : AssembleAdapter {
         if (HCF.instance.sotwHandler.serverIsOnSOTWTimer()) {
             lines.add("&a&lSOTW: " + getTimerScore(HCF.instance.sotwHandler.globalDuration))
         }
+
+        if (HCF.instance.kothHandler.serverHasActiveKoth()) {
+            val koth = HCF.instance.kothHandler.getFirstActiveKoth()
+            lines.add("&c&l" + koth!!.name + "&7: &f" + TimeUtils.formatIntoMMSS(koth.getKothTimer()))
+        }
         lines.add("&c&7&m--------------------")
         return lines;
     }

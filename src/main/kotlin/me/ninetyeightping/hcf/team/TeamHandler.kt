@@ -9,6 +9,7 @@ import org.bukkit.entity.Player
 import java.util.concurrent.ForkJoinPool
 import javax.print.Doc
 
+
 class TeamHandler {
 
     val mongoCollection: MongoCollection<Document> = HCF.instance.mongoDatabase.getCollection("teams")

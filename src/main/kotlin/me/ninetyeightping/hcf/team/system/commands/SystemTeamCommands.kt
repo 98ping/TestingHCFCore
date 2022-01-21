@@ -25,6 +25,7 @@ class SystemTeamCommands {
         val systeam = Team(
             name.toLowerCase(),
             name,
+            name,
             ArrayList(),
             ArrayList(),
             null,
@@ -35,11 +36,30 @@ class SystemTeamCommands {
             null,
             FactionType.SYSTEM,
             "",
+            0.0,
+            0L,
             ArrayList()
         )
 
         HCF.instance.teamHandler.createTeam(systeam)
         player.sendMessage(Chat.format("&aCreated a system team with the name &f$name"))
+    }
+
+    @Command(value = ["systemteam kothify"])
+    @Permission(value = "hcf.systemteams.admin", message = "No Permission.")
+    fun systemteamkothify(@Sender player: Player, @Name("team")name: String) {
+        if (!HCF.instance.teamHandler.exists(name)) {
+            player.sendMessage(Chat.format("&cSystem team not found."))
+            return
+        }
+
+        val team = HCF.instance.teamHandler.byName(name)
+        team!!.color = "&c&l"
+        team.fakeName = (team.displayName + " Koth")
+        team.save()
+        player.sendMessage(Chat.format("&aUpdated color and name of $name to make it look like a koth"))
+
+        HCF.instance.landBoard.refreshTeams()
     }
 
     @Command(value = ["systemteam setcolor"])

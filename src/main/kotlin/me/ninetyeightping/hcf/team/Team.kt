@@ -14,6 +14,7 @@ import kotlin.collections.ArrayList
 data class Team(
     var id: String,
     var displayName: String,
+    var fakeName: String,
     var members: ArrayList<String>,
     var subLeaders: ArrayList<String>,
     var leader: String?,
@@ -24,23 +25,25 @@ data class Team(
     var teamLocation: Location?,
     var teamType: FactionType,
     var color: String,
+    var dtr: Double,
+    var dtrregen: Long,
     var masks: ArrayList<Flag>
 ) {
 
     fun globalDisplay(player: Player) : String {
         if (color != "") {
-            return color + displayName
+            return color + fakeName
         }
 
         if (isMember(player)) {
-            return "&2$displayName"
+            return "&2$fakeName"
         }
 
         if (!isMember(player)) {
-            return "&c$displayName"
+            return "&c$fakeName"
         }
 
-        return "&c$displayName"
+        return "&c$fakeName"
     }
 
     fun verifyTeamClaimLocation(player: Player) : Boolean {

@@ -171,8 +171,8 @@ class Cuboid : Iterable<Block>, Cloneable, ConfigurationSerializable {
     }
 
     @JvmOverloads
-    constructor(l1: Location, l2: Location = l1) {
-        if (l1.world != l2.world) {
+    constructor(l1: Location?, l2: Location? = l1) {
+        if (l1!!.world != l2!!.world) {
             throw IllegalArgumentException("Locations must be on the same world")
         }
 

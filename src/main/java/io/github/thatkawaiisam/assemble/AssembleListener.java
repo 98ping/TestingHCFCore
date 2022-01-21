@@ -35,6 +35,7 @@ public class AssembleListener implements Listener {
 			}
 		}
 
+
 		getAssemble().getBoards().put(event.getPlayer().getUniqueId(), new AssembleBoard(event.getPlayer(), getAssemble()));
 	}
 

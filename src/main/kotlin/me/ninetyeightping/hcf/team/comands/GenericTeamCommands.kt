@@ -2,6 +2,7 @@ package me.ninetyeightping.hcf.team.comands
 
 import me.ninetyeightping.hcf.HCF
 import me.ninetyeightping.hcf.team.Team
+import me.ninetyeightping.hcf.team.TeamHandler
 import me.ninetyeightping.hcf.team.claims.listener.ClaimListener
 import me.ninetyeightping.hcf.team.claims.player.ClaimSession
 import me.ninetyeightping.hcf.team.types.FactionType
@@ -9,7 +10,6 @@ import me.ninetyeightping.hcf.util.Chat
 import me.vaperion.blade.annotation.Command
 import me.vaperion.blade.annotation.Name
 import me.vaperion.blade.annotation.Sender
-import org.bukkit.Bukkit
 import org.bukkit.World
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
@@ -152,6 +152,7 @@ class GenericTeamCommands {
         val team = Team(
             name.toLowerCase(),
             name,
+            name,
             ArrayList(),
             ArrayList(),
             player.uniqueId.toString(),
@@ -162,6 +163,8 @@ class GenericTeamCommands {
             null,
             FactionType.PLAYER,
             "",
+            0.0,
+            0L,
             ArrayList()
         )
 
