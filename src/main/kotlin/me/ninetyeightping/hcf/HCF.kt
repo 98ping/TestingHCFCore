@@ -16,6 +16,7 @@ import me.ninetyeightping.hcf.events.sotw.commands.SOTWCommands
 import me.ninetyeightping.hcf.players.HCFPlayerHandler
 import me.ninetyeightping.hcf.players.commands.EconomyCommands
 import me.ninetyeightping.hcf.players.listeners.HCFPlayerListener
+import me.ninetyeightping.hcf.players.stat.StatisticEntry
 import me.ninetyeightping.hcf.team.TeamHandler
 import me.ninetyeightping.hcf.team.claims.LandBoard
 import me.ninetyeightping.hcf.team.claims.listener.ClaimListener
@@ -26,8 +27,10 @@ import me.ninetyeightping.hcf.team.system.commands.SystemTeamCommands
 import me.ninetyeightping.hcf.timers.TimerHandler
 import me.ninetyeightping.hcf.timers.listeners.GenericTimerListener
 import me.ninetyeightping.hcf.util.Cuboid
+import me.ninetyeightping.hcf.util.InjectionUtil
 import me.ninetyeightping.hcf.util.serialize.CuboidSerializer
 import me.ninetyeightping.hcf.util.serialize.LocationSerializer
+import me.ninetyeightping.hcf.util.serialize.StatisticSerializer
 import me.vaperion.blade.Blade
 import me.vaperion.blade.bindings.impl.BukkitBindings
 import me.vaperion.blade.container.impl.BukkitCommandContainer
@@ -50,14 +53,12 @@ class HCF : JavaPlugin() {
         .setLongSerializationPolicy(LongSerializationPolicy.STRING)
         .registerTypeAdapter(Cuboid::class.java, CuboidSerializer)
         .registerTypeAdapter(Location::class.java, LocationSerializer)
+        .registerTypeAdapter(StatisticEntry::class.java, StatisticSerializer)
         .create();
 
-    lateinit var teamHandler: TeamHandler
-    lateinit var hcfPlayerHandler: HCFPlayerHandler
     lateinit var timerHandler: TimerHandler
     lateinit var sotwHandler: SOTWHandler
     lateinit var kothHandler: KothHandler
-
     lateinit var landBoard: LandBoard
 
 
@@ -68,8 +69,6 @@ class HCF : JavaPlugin() {
         mongoClient = MongoClient(MongoClientURI(config.getString("uri")))
         mongoDatabase = mongoClient.getDatabase("HCFCoreTest")
 
-        teamHandler = TeamHandler()
-        hcfPlayerHandler = HCFPlayerHandler()
         timerHandler = TimerHandler()
         sotwHandler = SOTWHandler()
         kothHandler = KothHandler()

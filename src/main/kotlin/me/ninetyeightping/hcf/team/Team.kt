@@ -2,9 +2,11 @@ package me.ninetyeightping.hcf.team
 
 import me.ninetyeightping.hcf.HCF
 import me.ninetyeightping.hcf.players.HCFPlayer
+import me.ninetyeightping.hcf.players.HCFPlayerHandler
 import me.ninetyeightping.hcf.team.system.flags.Flag
 import me.ninetyeightping.hcf.team.types.FactionType
 import me.ninetyeightping.hcf.util.Cuboid
+import me.ninetyeightping.hcf.util.InjectionUtil
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import java.util.*
@@ -51,7 +53,7 @@ data class Team(
     }
 
     fun getNamedMembers() : MutableList<String> {
-        val playerlist = members.stream().map { HCF.instance.hcfPlayerHandler.byUUID(UUID.fromString(it)) }.collect(Collectors.toList()) as ArrayList<HCFPlayer?>
+        val playerlist = members.stream().map { InjectionUtil.get(HCFPlayerHandler::class.java).byUUID(UUID.fromString(it)) }.collect(Collectors.toList()) as ArrayList<HCFPlayer?>
         return playerlist.stream().filter(Objects::nonNull).map { it!!.name }.collect(Collectors.toList())
     }
 
@@ -64,7 +66,7 @@ data class Team(
     }
 
     fun save() {
-        HCF.instance.teamHandler.save(this)
+        InjectionUtil.get(TeamHandler::class.java).save(this)
     }
 
 }

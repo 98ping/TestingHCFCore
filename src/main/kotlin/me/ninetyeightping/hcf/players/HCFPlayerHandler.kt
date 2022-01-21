@@ -6,9 +6,11 @@ import com.mongodb.client.model.UpdateOptions
 import me.ninetyeightping.hcf.HCF
 import org.bson.Document
 import org.bukkit.entity.Player
+import org.springframework.stereotype.Service
 import java.util.*
 import java.util.concurrent.ForkJoinPool
 
+@Service
 class HCFPlayerHandler {
 
     val mongoCollection: MongoCollection<Document> = HCF.instance.mongoDatabase.getCollection("hcfplayers")

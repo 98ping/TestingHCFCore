@@ -1,7 +1,9 @@
 package me.ninetyeightping.hcf.players.commands
 
 import me.ninetyeightping.hcf.HCF
+import me.ninetyeightping.hcf.players.HCFPlayerHandler
 import me.ninetyeightping.hcf.util.Chat
+import me.ninetyeightping.hcf.util.InjectionUtil
 import me.vaperion.blade.annotation.Command
 import me.vaperion.blade.annotation.Name
 import me.vaperion.blade.annotation.Permission
@@ -14,7 +16,7 @@ class EconomyCommands {
     @Command(value = ["adminpay"])
     @Permission(value = "hcf.admin", message = "No Permission.")
     fun pay(@Sender sender: Player, @Name("target")target: Player, @Name("amount")amount: Double) {
-        val hcfplayer = HCF.instance.hcfPlayerHandler.byPlayer(target)
+        val hcfplayer = InjectionUtil.get(HCFPlayerHandler::class.java).byPlayer(target)
         if (hcfplayer == null) {
             sender.sendMessage(Chat.format("&cPlayer not found"))
             return

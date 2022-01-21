@@ -6,10 +6,12 @@ import com.mongodb.client.model.UpdateOptions
 import me.ninetyeightping.hcf.HCF
 import org.bson.Document
 import org.bukkit.entity.Player
+import org.springframework.stereotype.Service
 import java.util.concurrent.ForkJoinPool
 import javax.print.Doc
 
 
+@Service
 class TeamHandler {
 
     val mongoCollection: MongoCollection<Document> = HCF.instance.mongoDatabase.getCollection("teams")

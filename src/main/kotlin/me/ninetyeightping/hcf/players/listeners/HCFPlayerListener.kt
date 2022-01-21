@@ -2,7 +2,10 @@ package me.ninetyeightping.hcf.players.listeners
 
 import me.ninetyeightping.hcf.HCF
 import me.ninetyeightping.hcf.players.HCFPlayer
+import me.ninetyeightping.hcf.players.HCFPlayerHandler
+import me.ninetyeightping.hcf.players.stat.StatisticEntry
 import me.ninetyeightping.hcf.util.Chat
+import me.ninetyeightping.hcf.util.InjectionUtil
 import org.bukkit.Material
 import org.bukkit.entity.EnderPearl
 import org.bukkit.entity.Player
@@ -43,9 +46,9 @@ class HCFPlayerListener : Listener {
     fun join(event: PlayerJoinEvent) {
         val player = event.player;
 
-        if (HCF.instance.hcfPlayerHandler.byPlayer(player) == null) {
-            val hcfPlayer = HCFPlayer(player.uniqueId.toString(), player.name, 0.0, "")
-            HCF.instance.hcfPlayerHandler.createPlayer(hcfPlayer)
+        if (InjectionUtil.get(HCFPlayerHandler::class.java).byPlayer(player) == null) {
+            val hcfPlayer = HCFPlayer(player.uniqueId.toString(), player.name, 0.0, StatisticEntry(0, 0, 0, 0))
+            InjectionUtil.get(HCFPlayerHandler::class.java).createPlayer(hcfPlayer)
         }
     }
 }

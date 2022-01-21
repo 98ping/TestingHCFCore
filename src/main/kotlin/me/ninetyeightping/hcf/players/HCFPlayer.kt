@@ -1,13 +1,15 @@
 package me.ninetyeightping.hcf.players
 
 import me.ninetyeightping.hcf.HCF
+import me.ninetyeightping.hcf.players.stat.StatisticEntry
+import me.ninetyeightping.hcf.util.InjectionUtil
 import org.bukkit.scoreboard.Team
 
 data class HCFPlayer(
     var uuid: String,
     var name: String,
     var balance: Double,
-    var team: String,
+    var stats: StatisticEntry
 ) {
 
 
@@ -16,6 +18,6 @@ data class HCFPlayer(
     }
 
     fun push() {
-        HCF.instance.hcfPlayerHandler.save(this)
+        InjectionUtil.get(HCFPlayerHandler::class.java).save(this)
     }
 }

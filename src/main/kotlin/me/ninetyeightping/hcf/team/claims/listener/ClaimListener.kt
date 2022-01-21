@@ -1,8 +1,10 @@
 package me.ninetyeightping.hcf.team.claims.listener
 
 import me.ninetyeightping.hcf.HCF
+import me.ninetyeightping.hcf.team.TeamHandler
 import me.ninetyeightping.hcf.util.Chat
 import me.ninetyeightping.hcf.util.Cuboid
+import me.ninetyeightping.hcf.util.InjectionUtil
 import me.ninetyeightping.hcf.util.ItemBuilder
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
@@ -24,7 +26,7 @@ fun interact(event: PlayerInteractEvent) {
     val player = event.player;
 
     if (player.itemInHand.isSimilar(claimWand)) {
-        val team = HCF.instance.teamHandler.byPlayer(player)
+        val team = InjectionUtil.get(TeamHandler::class.java).byPlayer(player)
         if (team == null) return
         if (event.action == Action.LEFT_CLICK_BLOCK) {
 
