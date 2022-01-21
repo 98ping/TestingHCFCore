@@ -28,6 +28,8 @@ fun interact(event: PlayerInteractEvent) {
         if (team == null) return
         if (event.action == Action.LEFT_CLICK_BLOCK) {
 
+            event.isCancelled = true
+
             var claimSession = HCF.instance.landBoard.sessions.getOrDefault(player.uniqueId, null)
             println(claimSession)
             if (claimSession == null) return
@@ -40,6 +42,8 @@ fun interact(event: PlayerInteractEvent) {
         }
         if (event.action == Action.RIGHT_CLICK_BLOCK) {
 
+            event.isCancelled = true
+
             var claimSession = HCF.instance.landBoard.sessions.getOrDefault(player.uniqueId, null)
             if (claimSession == null) return
 
@@ -49,6 +53,8 @@ fun interact(event: PlayerInteractEvent) {
 
         }
         if (event.action == Action.RIGHT_CLICK_AIR && player.isSneaking) {
+
+            event.isCancelled = true
 
             var claimSession = HCF.instance.landBoard.sessions.getOrDefault(player.uniqueId, null)
             if (claimSession == null) return
@@ -69,6 +75,7 @@ fun interact(event: PlayerInteractEvent) {
                 HCF.instance.landBoard.claims[claim] = team
                 team.save()
 
+                HCF.instance.landBoard.sessions.remove(player.uniqueId)
                 player.sendMessage(Chat.format("&aAdded a team claim for " + team.displayName))
 
             } else {

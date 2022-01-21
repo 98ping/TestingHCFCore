@@ -3,6 +3,7 @@ package me.ninetyeightping.hcf.team.claims
 import me.ninetyeightping.hcf.HCF
 import me.ninetyeightping.hcf.team.Team
 import me.ninetyeightping.hcf.team.claims.player.ClaimSession
+import me.ninetyeightping.hcf.team.system.claims.SystemTeamClaimSession
 import me.ninetyeightping.hcf.util.Cuboid
 import org.bukkit.Location
 import org.bukkit.World
@@ -11,14 +12,26 @@ import java.util.*
 
 class LandBoard {
 
+    //pure mortal claiming
     var claims = hashMapOf<Cuboid, Team>()
     var sessions = hashMapOf<UUID, ClaimSession>()
+
+    //superior being claiming
+    var systemSessions = hashMapOf<UUID, SystemTeamClaimSession>()
 
     val WARZONE_RADIUS = 1000
     val WARZONE_BORDER = 3000
 
     init {
 
+        for (team in HCF.instance.teamHandler.teams) {
+            team.claims.forEach {
+                claims[it] = team
+            }
+        }
+    }
+
+    fun refreshTeams() {
         for (team in HCF.instance.teamHandler.teams) {
             team.claims.forEach {
                 claims[it] = team
@@ -38,7 +51,12 @@ class LandBoard {
     }
 
     fun teamByClaim(cuboid: Cuboid): Team? {
-        return claims.getOrDefault(cuboid, null)
+        val team = claims.getOrDefault(cuboid, null)
+        if (team != null) {
+            return team
+        }
+
+        return null
     }
 
     fun claimByLocation(location: Location): Cuboid? {

@@ -19,12 +19,17 @@ import me.ninetyeightping.hcf.team.claims.LandBoard
 import me.ninetyeightping.hcf.team.claims.listener.ClaimListener
 import me.ninetyeightping.hcf.team.claims.listener.LandBoardListener
 import me.ninetyeightping.hcf.team.comands.GenericTeamCommands
+import me.ninetyeightping.hcf.team.system.claims.listeners.SystemTeamClaimListener
+import me.ninetyeightping.hcf.team.system.commands.SystemTeamCommands
 import me.ninetyeightping.hcf.timers.TimerHandler
+import me.ninetyeightping.hcf.timers.listeners.GenericTimerListener
 import me.ninetyeightping.hcf.util.Cuboid
 import me.ninetyeightping.hcf.util.serialize.CuboidSerializer
+import me.ninetyeightping.hcf.util.serialize.LocationSerializer
 import me.vaperion.blade.Blade
 import me.vaperion.blade.bindings.impl.BukkitBindings
 import me.vaperion.blade.container.impl.BukkitCommandContainer
+import org.bukkit.Location
 import org.bukkit.plugin.java.JavaPlugin
 
 class HCF : JavaPlugin() {
@@ -41,6 +46,7 @@ class HCF : JavaPlugin() {
         .setPrettyPrinting()
         .setLongSerializationPolicy(LongSerializationPolicy.STRING)
         .registerTypeAdapter(Cuboid::class.java, CuboidSerializer)
+        .registerTypeAdapter(Location::class.java, LocationSerializer)
         .create();
 
     lateinit var teamHandler: TeamHandler
@@ -72,12 +78,14 @@ class HCF : JavaPlugin() {
         server.pluginManager.registerEvents(HCFPlayerListener(), this)
         server.pluginManager.registerEvents(ClaimListener(), this)
         server.pluginManager.registerEvents(LandBoardListener(), this)
+        server.pluginManager.registerEvents(GenericTimerListener(), this)
+        server.pluginManager.registerEvents(SystemTeamClaimListener(), this)
 
         //commands
         Blade.of().fallbackPrefix("HCF")
             .containerCreator(BukkitCommandContainer.CREATOR)
             .binding(BukkitBindings()).build()
-            .register(GenericTeamCommands()).register(EconomyCommands()).register(SOTWCommands())
+            .register(GenericTeamCommands()).register(EconomyCommands()).register(SOTWCommands()).register(SystemTeamCommands())
 
 
     }

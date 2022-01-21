@@ -23,6 +23,11 @@ class TeamHandler {
         return teams.stream().filter { it.members.contains(player.uniqueId.toString()) }.findFirst().orElse(null)
     }
 
+
+    fun byName(name: String) : Team? {
+        return teams.stream().filter { it.displayName.equals(name, ignoreCase = true) }.findFirst().orElse(null)
+    }
+
     fun exists(name: String) : Boolean {
         return teams.stream().filter { it.displayName.equals(name, ignoreCase = true) }.findFirst().orElse(null) != null
     }
