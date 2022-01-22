@@ -10,8 +10,10 @@ import me.ninetyeightping.hcf.util.InjectionUtil
 import org.bukkit.Location
 import org.bukkit.World
 import org.bukkit.entity.Player
+import org.springframework.stereotype.Service
 import java.util.*
 
+@Service
 class LandBoard {
 
     //pure mortal claiming
@@ -26,7 +28,8 @@ class LandBoard {
 
     init {
 
-        for (team in InjectionUtil.get(TeamHandler::class.java).teams) {
+        //thank you spring beans
+        for (team in HCF.instance.teamHandler.teams) {
             team.claims.forEach {
                 claims[it] = team
             }

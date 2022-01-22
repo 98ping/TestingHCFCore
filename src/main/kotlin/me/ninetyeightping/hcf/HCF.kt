@@ -9,6 +9,8 @@ import com.mongodb.client.MongoDatabase
 import io.github.thatkawaiisam.assemble.Assemble
 import io.github.thatkawaiisam.assemble.AssembleStyle
 import me.ninetyeightping.hcf.board.AssembleBoard
+import me.ninetyeightping.hcf.elevator.ElevatorSignCommands
+import me.ninetyeightping.hcf.elevator.listeners.ElevatorCreateListener
 import me.ninetyeightping.hcf.events.koth.commands.KothGenericCommands
 import me.ninetyeightping.hcf.events.koth.types.KothHandler
 import me.ninetyeightping.hcf.events.sotw.SOTWHandler
@@ -61,6 +63,9 @@ class HCF : JavaPlugin() {
     lateinit var kothHandler: KothHandler
     lateinit var landBoard: LandBoard
 
+    //need this for initialization of landboard. Beans dont work when it depends on itself
+    lateinit var teamHandler: TeamHandler
+
 
     override fun onEnable() {
         saveDefaultConfig()
@@ -72,6 +77,7 @@ class HCF : JavaPlugin() {
         timerHandler = TimerHandler()
         sotwHandler = SOTWHandler()
         kothHandler = KothHandler()
+        teamHandler = TeamHandler()
 
         landBoard = LandBoard()
 
@@ -84,6 +90,7 @@ class HCF : JavaPlugin() {
         server.pluginManager.registerEvents(LandBoardListener(), this)
         server.pluginManager.registerEvents(GenericTimerListener(), this)
         server.pluginManager.registerEvents(SystemTeamClaimListener(), this)
+        server.pluginManager.registerEvents(ElevatorCreateListener(), this)
 
 
 
@@ -96,6 +103,7 @@ class HCF : JavaPlugin() {
             .register(SOTWCommands())
             .register(SystemTeamCommands())
             .register(KothGenericCommands())
+            .register(ElevatorSignCommands())
 
 
     }

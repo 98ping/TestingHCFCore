@@ -3,7 +3,6 @@ package me.ninetyeightping.hcf.board
 import io.github.thatkawaiisam.assemble.AssembleAdapter
 import me.ninetyeightping.hcf.HCF
 import me.ninetyeightping.hcf.players.HCFPlayerHandler
-import me.ninetyeightping.hcf.players.stat.StatisticEntry
 import me.ninetyeightping.hcf.util.Chat
 import me.ninetyeightping.hcf.util.InjectionUtil
 import me.ninetyeightping.hcf.util.TimeUtils
@@ -28,7 +27,7 @@ class AssembleBoard : AssembleAdapter {
                 lines.add("&eKillstreak&7: &f" + entry.killstreak)
             }
         }
-        lines.add("&6&lClaim: &r" + HCF.instance.landBoard.getClaimForScoreboard(player!!))
+        lines.add("&6&lClaim: &r" + HCF.instance.landBoard.getClaimForScoreboard(player))
 
         if (HCF.instance.timerHandler.enderpearlTimer.hasCooldown(player)) {
             lines.add("&9Enderpearl: &f" + getPearlScore(player))
