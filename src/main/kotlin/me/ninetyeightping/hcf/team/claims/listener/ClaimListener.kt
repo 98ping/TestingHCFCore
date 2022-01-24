@@ -70,10 +70,8 @@ class ClaimListener : Listener {
                 event.isCancelled = true
 
                 var claimSession = HCF.instance.landBoard.sessions.getOrDefault(player.uniqueId, null)
-                println(claimSession)
                 if (claimSession == null) return
 
-                println("asd")
                 claimSession.position1 = event.clickedBlock.location
                 player.sendMessage(Chat.format("&aUpdated position 1"))
 
@@ -108,6 +106,11 @@ class ClaimListener : Listener {
                     loc2.y = 0.0;
 
                     if (loc1.world != loc2.world) return
+
+                    if (!InjectionUtil.get(LandBoard::class.java).verifyCanClaim(loc1) || !InjectionUtil.get(LandBoard::class.java).verifyCanClaim(loc2)) {
+                        player.sendMessage(Chat.format("&cOne or more of the locations in your claim are unable to be claimed!"))
+                        return
+                    }
 
                     val claim = Cuboid(loc1, loc2)
                     team.claims.add(claim)

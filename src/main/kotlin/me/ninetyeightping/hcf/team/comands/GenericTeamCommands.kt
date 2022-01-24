@@ -1,11 +1,14 @@
 package me.ninetyeightping.hcf.team.comands
 
 import me.ninetyeightping.hcf.HCF
+import me.ninetyeightping.hcf.players.HCFPlayerHandler
 import me.ninetyeightping.hcf.team.Team
 import me.ninetyeightping.hcf.team.TeamHandler
 import me.ninetyeightping.hcf.team.claims.listener.ClaimListener
 import me.ninetyeightping.hcf.team.claims.player.ClaimSession
 import me.ninetyeightping.hcf.team.types.FactionType
+import me.ninetyeightping.hcf.timers.impl.CombatTimer
+import me.ninetyeightping.hcf.timers.impl.FHomeTimer
 import me.ninetyeightping.hcf.util.Chat
 import me.ninetyeightping.hcf.util.InjectionUtil
 import me.vaperion.blade.annotation.Command
@@ -61,74 +64,77 @@ class GenericTeamCommands {
             return
         }
 
-        if (HCF.instance.timerHandler.combatTimer.hasCooldown(player)) {
+        if (CombatTimer.hasCooldown(player)) {
             player.sendMessage(Chat.format("&cYou are currently under &4Combat &ctag"))
             return
         }
 
+        FHomeTimer.addCooldown(player)
         object : BukkitRunnable() {
             var seconds = 0;
             override fun run() {
 
-                when (seconds) {
-                    0 -> {
-                        player.sendMessage(Chat.format("&eTeleporting to your HQ in &f10 Seconds"))
-                    }
-
-                    5 -> {
-                        player.sendMessage(Chat.format("&eTeleporting to your HQ in &f5 Seconds"))
-                    }
-
-                    6 -> {
-                        player.sendMessage(Chat.format("&eTeleporting to your HQ in &f4 Seconds"))
-                    }
-
-                    7 -> {
-                        player.sendMessage(Chat.format("&eTeleporting to your HQ in &f3 Seconds"))
-                    }
-
-                    8 -> {
-                        player.sendMessage(Chat.format("&eTeleporting to your HQ in &f2 Seconds"))
-                    }
-
-                    9 -> {
-                        player.sendMessage(Chat.format("&eTeleporting to your HQ in &f1 Seconds"))
-                    }
-
-                    10 -> {
-                        player.teleport(team.teamLocation)
-                        player.sendMessage(Chat.format("&eTeleported to your HQ"))
-                        cancel()
-                    }
-
+                if (!FHomeTimer.hasCooldown(player)) {
+                    player.sendMessage(Chat.format("&cYour &bHome &ctimer was removed."))
+                    cancel()
                 }
 
-                seconds++
-            }
+                    when (seconds) {
+                        0 -> {
+                            player.sendMessage(Chat.format("&eTeleporting to your HQ in &f10 Seconds"))
+                        }
+
+                        5 -> {
+                            player.sendMessage(Chat.format("&eTeleporting to your HQ in &f5 Seconds"))
+                        }
+
+                        6 -> {
+                            player.sendMessage(Chat.format("&eTeleporting to your HQ in &f4 Seconds"))
+                        }
+
+                        7 -> {
+                            player.sendMessage(Chat.format("&eTeleporting to your HQ in &f3 Seconds"))
+                        }
+
+                        8 -> {
+                            player.sendMessage(Chat.format("&eTeleporting to your HQ in &f2 Seconds"))
+                        }
+
+                        9 -> {
+                            player.sendMessage(Chat.format("&eTeleporting to your HQ in &f1 Seconds"))
+                        }
+
+                        10 -> {
+                            player.teleport(team.teamLocation)
+                            player.sendMessage(Chat.format("&eTeleported to your HQ"))
+                            cancel()
+                        }
+
+                    }
+
+                    seconds++
+                }
 
         }.runTaskTimer(HCF.instance, 0L, 20L)
     }
 
 
     @Command(value = ["team who", "f who", "t who"])
-    fun teamInfo(@Sender sender: Player, @Name("target") player: Player) {
+    fun teamInfo(@Sender sender: Player, @Name("target") player: String) {
 
-        val team = InjectionUtil.get(TeamHandler::class.java).byPlayer(player)
-        if (team == null) {
-            sender.sendMessage(Chat.format("&cTeam not found!"))
+        val hcfplayer = InjectionUtil.get(HCFPlayerHandler::class.java).byPlayerName(player) ?: return
+
+        val teambyPlayer = InjectionUtil.get(TeamHandler::class.java).byUUID(UUID.fromString(hcfplayer.uuid))
+
+        if (teambyPlayer == null) {
+            sender.sendMessage(Chat.format("&cNo team has this player in their roster"))
             return
         }
 
-        val sendTo = sender
-        sendTo.sendMessage(Chat.format("&7&m-------------------"))
-        sendTo.sendMessage(Chat.format("&9${team.displayName}"))
-        sendTo.sendMessage(Chat.format("&eBalance: &f" + team.balance))
-        sendTo.sendMessage(
-            Chat.format(
-                "&eMembers: &f" + team.getNamedMembers().toString().replace("[", "").replace("]", "")
-            )
-        )
-        sendTo.sendMessage(Chat.format("&7&m-------------------"))
+        teambyPlayer.sendTeamInfo(sender)
+
+
+
 
     }
 
@@ -178,6 +184,7 @@ class GenericTeamCommands {
         //add creator to the list
         team.members.add(player.uniqueId.toString())
 
+        team.dtr = team.calculateMaximumDTR()
 
         InjectionUtil.get(TeamHandler::class.java).createTeam(team)
         player.sendMessage(Chat.format("&eCreated a team with the name of $name"))

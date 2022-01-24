@@ -36,6 +36,14 @@ class LandBoard {
         }
     }
 
+    fun verifyCanClaim(location: Location) : Boolean {
+        if (isWarzone(location)) return false
+
+        if (claimByLocation(location) != null) return false
+
+        return true
+    }
+
     fun refreshTeams() {
         for (team in InjectionUtil.get(TeamHandler::class.java).teams) {
             team.claims.forEach {

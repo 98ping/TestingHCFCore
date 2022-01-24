@@ -8,10 +8,7 @@ import me.ninetyeightping.hcf.team.system.claims.listeners.SystemTeamClaimListen
 import me.ninetyeightping.hcf.team.types.FactionType
 import me.ninetyeightping.hcf.util.Chat
 import me.ninetyeightping.hcf.util.InjectionUtil
-import me.vaperion.blade.annotation.Command
-import me.vaperion.blade.annotation.Name
-import me.vaperion.blade.annotation.Permission
-import me.vaperion.blade.annotation.Sender
+import me.vaperion.blade.annotation.*
 import org.bukkit.entity.Player
 
 class SystemTeamCommands {
@@ -62,6 +59,21 @@ class SystemTeamCommands {
         player.sendMessage(Chat.format("&aUpdated color and name of $name to make it look like a koth"))
 
         HCF.instance.landBoard.refreshTeams()
+    }
+
+    @Command(value = ["systemteam setfakename"])
+    @Permission(value = "hcf.systemteams.admin", message = "No Permission.")
+    fun systemteamfakename(@Sender player: Player, @Name("team")name: String, @Name("fakename") @Combined fakename: String) {
+        if (!InjectionUtil.get(TeamHandler::class.java).exists(name)) {
+            player.sendMessage(Chat.format("&cSystem team not found."))
+            return
+        }
+
+        val team = InjectionUtil.get(TeamHandler::class.java).byName(name)
+        team!!.fakeName = fakename
+        team.save()
+        player.sendMessage(Chat.format("&aUpdated fakename of $name"))
+
     }
 
     @Command(value = ["systemteam setcolor"])

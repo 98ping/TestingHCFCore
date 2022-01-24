@@ -5,11 +5,13 @@ import me.ninetyeightping.hcf.players.HCFPlayer
 import me.ninetyeightping.hcf.players.HCFPlayerHandler
 import me.ninetyeightping.hcf.team.system.flags.Flag
 import me.ninetyeightping.hcf.team.types.FactionType
+import me.ninetyeightping.hcf.util.Chat
 import me.ninetyeightping.hcf.util.Cuboid
 import me.ninetyeightping.hcf.util.InjectionUtil
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import java.util.*
+import java.util.concurrent.TimeUnit
 import java.util.stream.Collectors
 import kotlin.collections.ArrayList
 
@@ -32,6 +34,11 @@ data class Team(
     var masks: ArrayList<Flag>
 ) {
 
+
+    fun calculateMaximumDTR() : Double {
+        return (members.size * 1.1)
+    }
+
     fun globalDisplay(player: Player) : String {
         if (color != "") {
             return color + fakeName
@@ -46,6 +53,23 @@ data class Team(
         }
 
         return "&c$fakeName"
+    }
+
+    fun sendTeamInfo(sendTo: Player) {
+        //copied this over to team
+        val team = this
+        sendTo.sendMessage(Chat.format("&7&m-------------------"))
+        sendTo.sendMessage(Chat.format("&9${team.displayName}"))
+        sendTo.sendMessage(Chat.format("&eLeader: &f"  + InjectionUtil.get(HCFPlayerHandler::class.java).byUUID(UUID.fromString(team.leader))!!.name))
+        sendTo.sendMessage(
+            Chat.format(
+                "&eMembers: &f" + team.getNamedMembers().toString().replace("[", "").replace("]", "")
+            )
+        )
+        sendTo.sendMessage(Chat.format("&eClaims: &f" + team.claims.size))
+        sendTo.sendMessage(Chat.format("&eBalance: &f" + team.balance))
+        sendTo.sendMessage(Chat.format("&eDTR: &f" + team.dtr))
+        sendTo.sendMessage(Chat.format("&7&m-------------------"))
     }
 
     fun verifyTeamClaimLocation(player: Player) : Boolean {
@@ -63,6 +87,10 @@ data class Team(
 
     fun construct() : String {
         return HCF.instance.gson.toJson(this)
+    }
+
+    fun putTeamOnDTRRegen() {
+        dtrregen = System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1)
     }
 
     fun save() {

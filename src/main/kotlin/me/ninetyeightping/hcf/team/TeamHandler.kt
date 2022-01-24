@@ -7,6 +7,7 @@ import me.ninetyeightping.hcf.HCF
 import org.bson.Document
 import org.bukkit.entity.Player
 import org.springframework.stereotype.Service
+import java.util.*
 import java.util.concurrent.ForkJoinPool
 import javax.print.Doc
 
@@ -24,6 +25,10 @@ class TeamHandler {
 
     fun byPlayer(player: Player) : Team? {
         return teams.stream().filter { it.members.contains(player.uniqueId.toString()) }.findFirst().orElse(null)
+    }
+
+    fun byUUID(uuid: UUID) : Team? {
+        return teams.stream().filter { it.members.contains(uuid.toString()) }.findFirst().orElse(null)
     }
 
 

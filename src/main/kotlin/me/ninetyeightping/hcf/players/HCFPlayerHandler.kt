@@ -26,6 +26,10 @@ class HCFPlayerHandler {
         return hcfplayers.stream().filter { it.uuid == player.uniqueId.toString() }.findFirst().orElse(null)
     }
 
+    fun byPlayerName(name: String) : HCFPlayer? {
+        return hcfplayers.stream().filter { it.name == name }.findFirst().orElse(null)
+    }
+
     fun byUUID(uuid: UUID) : HCFPlayer? {
         return hcfplayers.stream().filter { it.uuid == uuid.toString() }.findFirst().orElse(null)
     }

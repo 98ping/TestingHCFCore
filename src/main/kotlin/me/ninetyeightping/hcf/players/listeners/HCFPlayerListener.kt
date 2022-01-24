@@ -4,6 +4,7 @@ import me.ninetyeightping.hcf.HCF
 import me.ninetyeightping.hcf.players.HCFPlayer
 import me.ninetyeightping.hcf.players.HCFPlayerHandler
 import me.ninetyeightping.hcf.players.stat.StatisticEntry
+import me.ninetyeightping.hcf.timers.impl.EnderpearlTimer
 import me.ninetyeightping.hcf.util.Chat
 import me.ninetyeightping.hcf.util.InjectionUtil
 import org.bukkit.Material
@@ -23,8 +24,8 @@ class HCFPlayerListener : Listener {
         if (event.entity is EnderPearl) {
             if (event.entity.shooter is Player) {
                 val player = event.entity.shooter as Player
-                if (!HCF.instance.timerHandler.enderpearlTimer.hasCooldown(player)) {
-                    HCF.instance.timerHandler.enderpearlTimer.addCooldown(player)
+                if (!EnderpearlTimer.hasCooldown(player)) {
+                    EnderpearlTimer.addCooldown(player)
                 }
             }
         }
@@ -34,7 +35,7 @@ class HCFPlayerListener : Listener {
     fun projectileInteract(event: PlayerInteractEvent) {
         if (event.action == Action.RIGHT_CLICK_AIR || event.action == Action.RIGHT_CLICK_BLOCK) {
             if (event.player.itemInHand.type == Material.ENDER_PEARL) {
-                if (HCF.instance.timerHandler.enderpearlTimer.hasCooldown(event.player)) {
+                if (EnderpearlTimer.hasCooldown(event.player)) {
                     event.isCancelled = true
                     event.player.sendMessage(Chat.format("&c&lCurrently on &9Enderpearl &c&lcooldown"))
                 }

@@ -3,6 +3,9 @@ package me.ninetyeightping.hcf.board
 import io.github.thatkawaiisam.assemble.AssembleAdapter
 import me.ninetyeightping.hcf.HCF
 import me.ninetyeightping.hcf.players.HCFPlayerHandler
+import me.ninetyeightping.hcf.timers.impl.CombatTimer
+import me.ninetyeightping.hcf.timers.impl.EnderpearlTimer
+import me.ninetyeightping.hcf.timers.impl.FHomeTimer
 import me.ninetyeightping.hcf.util.Chat
 import me.ninetyeightping.hcf.util.InjectionUtil
 import me.ninetyeightping.hcf.util.TimeUtils
@@ -29,11 +32,15 @@ class AssembleBoard : AssembleAdapter {
         }
         lines.add("&6&lClaim: &r" + HCF.instance.landBoard.getClaimForScoreboard(player))
 
-        if (HCF.instance.timerHandler.enderpearlTimer.hasCooldown(player)) {
+        if (EnderpearlTimer.hasCooldown(player)) {
             lines.add("&9Enderpearl: &f" + getPearlScore(player))
         }
 
-        if (HCF.instance.timerHandler.combatTimer.hasCooldown(player)) {
+        if (FHomeTimer.hasCooldown(player)) {
+            lines.add("&bHome: &f" + getHomeScore(player))
+        }
+
+        if (CombatTimer.hasCooldown(player)) {
             lines.add("&4Combat: &f" + getCombatScore(player))
         }
 
@@ -56,7 +63,16 @@ class AssembleBoard : AssembleAdapter {
 
     fun getCombatScore(player: Player?): String? {
         val diff =
-            HCF.instance.timerHandler.combatTimer.cooldownMap[player!!.uniqueId]?.minus(System.currentTimeMillis())
+            CombatTimer.cooldownMap[player!!.uniqueId]?.minus(System.currentTimeMillis())
+        if (diff!! > 0) {
+            return TimeUtils.formatIntoAbbreviatedString((diff / 1000L).toInt())
+        }
+        return null
+    }
+
+    fun getHomeScore(player: Player?): String? {
+        val diff =
+            FHomeTimer.cooldownMap[player!!.uniqueId]?.minus(System.currentTimeMillis())
         if (diff!! > 0) {
             return TimeUtils.formatIntoAbbreviatedString((diff / 1000L).toInt())
         }
@@ -65,7 +81,7 @@ class AssembleBoard : AssembleAdapter {
 
     fun getPearlScore(player: Player?): String? {
         val diff =
-            HCF.instance.timerHandler.enderpearlTimer.cooldownMap[player!!.uniqueId]?.minus(System.currentTimeMillis())
+            EnderpearlTimer.cooldownMap[player!!.uniqueId]?.minus(System.currentTimeMillis())
         if (diff!! > 0) {
             return TimeUtils.formatIntoAbbreviatedString((diff / 1000L).toInt())
         }
