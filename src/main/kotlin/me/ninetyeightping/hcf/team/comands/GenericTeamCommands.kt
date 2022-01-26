@@ -118,6 +118,58 @@ class GenericTeamCommands {
         }.runTaskTimer(HCF.instance, 0L, 20L)
     }
 
+    @Command(value = ["team accept", "f accept", "t accept"])
+    fun accept(@Sender sender: Player, @Name("team")teamString: String) {
+        val team = InjectionUtil.get(TeamHandler::class.java).byPlayer(sender)
+        if (team != null) {
+            sender.sendMessage(Chat.format("&cYou are currently on a team"))
+            return
+        }
+
+        val tryingToAcceptTeam = InjectionUtil.get(TeamHandler::class.java).byName(teamString)
+        if (tryingToAcceptTeam == null) {
+            sender.sendMessage(Chat.format("&cThis team you are trying to accept is null"))
+            return
+        }
+
+        if (!tryingToAcceptTeam.pendingInvites.contains(sender.uniqueId.toString())) {
+            sender.sendMessage(Chat.format("&cThis team has not invited you"))
+            return
+        }
+
+        tryingToAcceptTeam.members.add(sender.uniqueId.toString())
+        tryingToAcceptTeam.pendingInvites.remove(sender.uniqueId.toString())
+        tryingToAcceptTeam.setMaximumDTR()
+        tryingToAcceptTeam.save()
+        tryingToAcceptTeam.sendGlobalTeamMessage("&e" + sender.name + " &ehas joined the team!")
+    }
+
+    @Command(value = ["team invite", "f invite", "t invite"])
+    fun invite(@Sender sender: Player, @Name("target")target: String) {
+        val team = InjectionUtil.get(TeamHandler::class.java).byPlayer(sender)
+        if (team == null) {
+            sender.sendMessage(Chat.format("&cYou are not on a team currently"))
+            return
+        }
+
+        val hcfplayer = InjectionUtil.get(HCFPlayerHandler::class.java).byPlayerName(target)
+
+        if (hcfplayer == null) {
+            sender.sendMessage(Chat.format("&cPlayer has never logged in under this alias"))
+            return
+        }
+
+        if (!team.subLeaders.contains(sender.uniqueId.toString())) {
+            sender.sendMessage(Chat.format("&cYou must be a subleader to invite a user"))
+            return
+        }
+
+        team.pendingInvites.add(hcfplayer.uuid)
+        team.save()
+        team.sendGlobalTeamMessage("&e" + hcfplayer.name + " &ehas been invited to the team")
+
+    }
+
 
     @Command(value = ["team who", "f who", "t who"])
     fun teamInfo(@Sender sender: Player, @Name("target") player: String) {

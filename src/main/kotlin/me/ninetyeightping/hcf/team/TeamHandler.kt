@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service
 import java.util.*
 import java.util.concurrent.ForkJoinPool
 import javax.print.Doc
+import kotlin.collections.ArrayList
 
 
 @Service
@@ -20,7 +21,7 @@ class TeamHandler {
     var teams = arrayListOf<Team>()
 
     init {
-        for (document in mongoCollection.find()) teams.add(deserialize(document))
+        teams = mongoCollection.find().into(ArrayList()).map { deserialize(it) }.toCollection(ArrayList())
     }
 
     fun byPlayer(player: Player) : Team? {

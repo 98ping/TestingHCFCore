@@ -8,6 +8,7 @@ import me.ninetyeightping.hcf.team.types.FactionType
 import me.ninetyeightping.hcf.util.Chat
 import me.ninetyeightping.hcf.util.Cuboid
 import me.ninetyeightping.hcf.util.InjectionUtil
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import java.util.*
@@ -35,6 +36,13 @@ data class Team(
 ) {
 
 
+    fun setMaximumDTR() {
+        if (dtrregen != 0L) {
+            dtr = calculateMaximumDTR()
+            save()
+        }
+    }
+
     fun calculateMaximumDTR() : Double {
         return (members.size * 1.1)
     }
@@ -53,6 +61,12 @@ data class Team(
         }
 
         return "&c$fakeName"
+    }
+
+    fun sendGlobalTeamMessage(message: String) {
+        val players = members.map { Bukkit.getPlayer(UUID.fromString(it)) }.filter { Objects.nonNull(it) }.toCollection(ArrayList())
+
+        players.forEach { it.sendMessage(Chat.format(message)) }
     }
 
     fun sendTeamInfo(sendTo: Player) {
