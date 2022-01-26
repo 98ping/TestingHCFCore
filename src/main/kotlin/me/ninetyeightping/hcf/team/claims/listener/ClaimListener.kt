@@ -89,7 +89,7 @@ class ClaimListener : Listener {
 
 
             }
-            if (event.action == Action.RIGHT_CLICK_AIR && player.isSneaking) {
+            if (event.action == Action.LEFT_CLICK_AIR && player.isSneaking) {
 
                 event.isCancelled = true
 

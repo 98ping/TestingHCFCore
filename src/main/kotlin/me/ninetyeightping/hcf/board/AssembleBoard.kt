@@ -14,7 +14,7 @@ import org.bukkit.entity.Player
 class AssembleBoard : AssembleAdapter {
 
     override fun getTitle(player: Player?): String {
-        return Chat.format("&c&lTesting")
+        return Chat.format("&a&lMatrix Network")
     }
 
     override fun getLines(player: Player?): MutableList<String> {
@@ -25,9 +25,9 @@ class AssembleBoard : AssembleAdapter {
         if (hcfplayer != null) {
             val entry = hcfplayer.stats
             if (HCF.instance.config.getBoolean("kits")) {
-                lines.add("&eKills&7: &f" + entry.kills)
-                lines.add("&eDeaths&7: &f" + entry.deaths)
-                lines.add("&eKillstreak&7: &f" + entry.killstreak)
+                lines.add("&aKills&7: &f" + entry.kills)
+                lines.add("&aDeaths&7: &f" + entry.deaths)
+                lines.add("&aKillstreak&7: &f" + entry.killstreak)
             }
         }
         lines.add("&6&lClaim: &r" + HCF.instance.landBoard.getClaimForScoreboard(player))

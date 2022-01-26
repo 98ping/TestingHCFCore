@@ -214,6 +214,11 @@ class GenericTeamCommands {
             return
         }
 
+        if (InjectionUtil.get(TeamHandler::class.java).byPlayer(player) != null) {
+            player.sendMessage(Chat.format("&cYou are already on a team!"))
+            return
+        }
+
         val team = Team(
             name.toLowerCase(),
             name,
