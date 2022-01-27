@@ -190,6 +190,25 @@ class GenericTeamCommands {
 
     }
 
+    @Command(value = ["team", "f", "t"])
+    fun info(@Sender sender: Player) {
+        sender.sendMessage(Chat.format("&eFaction Information"))
+        sender.sendMessage(" ")
+        sender.sendMessage(Chat.format("&6Normal Commands"))
+        sender.sendMessage(Chat.format("&e/team create"))
+        sender.sendMessage(Chat.format("&e/team disband"))
+        sender.sendMessage(Chat.format("&e/team who"))
+        sender.sendMessage(Chat.format("&e/team accept"))
+        sender.sendMessage(Chat.format("&e/team home"))
+        sender.sendMessage(" ")
+        sender.sendMessage(Chat.format("&6Subleader Commands"))
+        sender.sendMessage(Chat.format("&e/team claim"))
+        sender.sendMessage(Chat.format("&e/team invite"))
+        sender.sendMessage(Chat.format("&e/team kick"))
+        sender.sendMessage(Chat.format("&e/team sethome"))
+
+    }
+
     @Command(value = ["team claim", "f claim", "t claim"])
     fun claim(@Sender sender: Player) {
         val team = InjectionUtil.get(TeamHandler::class.java).byPlayer(sender)
