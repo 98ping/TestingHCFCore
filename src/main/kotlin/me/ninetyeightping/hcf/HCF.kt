@@ -102,8 +102,8 @@ class HCF : JavaPlugin() {
             .register(ElevatorSignCommands())
 
 
-        (DTRUpdateTask()).runTaskTimerAsynchronously(this, 0L, 40L)
 
+        (DTRUpdateTask()).runTaskTimer(this, 0L, 20L)
 
     }
 

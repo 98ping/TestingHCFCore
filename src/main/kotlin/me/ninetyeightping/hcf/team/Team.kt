@@ -8,6 +8,7 @@ import me.ninetyeightping.hcf.team.types.FactionType
 import me.ninetyeightping.hcf.util.Chat
 import me.ninetyeightping.hcf.util.Cuboid
 import me.ninetyeightping.hcf.util.InjectionUtil
+import me.ninetyeightping.hcf.util.TimeUtils
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -43,11 +44,11 @@ data class Team(
         }
     }
 
-    fun calculateMaximumDTR() : Double {
+    fun calculateMaximumDTR(): Double {
         return (members.size * 1.1)
     }
 
-    fun globalDisplay(player: Player) : String {
+    fun globalDisplay(player: Player): String {
         if (color != "") {
             return color + fakeName
         }
@@ -64,7 +65,8 @@ data class Team(
     }
 
     fun sendGlobalTeamMessage(message: String) {
-        val players = members.map { Bukkit.getPlayer(UUID.fromString(it)) }.filter { Objects.nonNull(it) }.toCollection(ArrayList())
+        val players = members.map { Bukkit.getPlayer(UUID.fromString(it)) }.filter { Objects.nonNull(it) }
+            .toCollection(ArrayList())
 
         players.forEach { it.sendMessage(Chat.format(message)) }
     }
@@ -74,7 +76,12 @@ data class Team(
         val team = this
         sendTo.sendMessage(Chat.format("&7&m-------------------"))
         sendTo.sendMessage(Chat.format("&9${team.displayName}"))
-        sendTo.sendMessage(Chat.format("&eLeader: &f"  + InjectionUtil.get(HCFPlayerHandler::class.java).byUUID(UUID.fromString(team.leader))!!.name))
+        sendTo.sendMessage(
+            Chat.format(
+                "&eLeader: &f" + InjectionUtil.get(HCFPlayerHandler::class.java)
+                    .byUUID(UUID.fromString(team.leader))!!.name
+            )
+        )
         sendTo.sendMessage(
             Chat.format(
                 "&eMembers: &f" + team.getNamedMembers().toString().replace("[", "").replace("]", "")
@@ -83,29 +90,38 @@ data class Team(
         sendTo.sendMessage(Chat.format("&eClaims: &f" + team.claims.size))
         sendTo.sendMessage(Chat.format("&eBalance: &f" + team.balance))
         sendTo.sendMessage(Chat.format("&eDTR: &f" + team.dtr))
+        sendTo.sendMessage(Chat.format("&eDTR Regen: &f" + getDTRRegenScore(team.dtrregen)))
         sendTo.sendMessage(Chat.format("&7&m-------------------"))
     }
 
-    fun verifyTeamClaimLocation(player: Player) : Boolean {
+    fun getDTRRegenScore(time: Long): String? {
+        val diff = time - System.currentTimeMillis()
+        return if (diff > 0) {
+            TimeUtils.formatIntoAbbreviatedString((diff / 1000L).toInt())
+        } else {
+            null
+        }
+    }
+
+    fun verifyTeamClaimLocation(player: Player): Boolean {
         return claims.stream().filter { it.contains(player.location) }.findFirst().orElse(null) != null
     }
 
-    fun getNamedMembers() : MutableList<String> {
-        val playerlist = members.stream().map { InjectionUtil.get(HCFPlayerHandler::class.java).byUUID(UUID.fromString(it)) }.collect(Collectors.toList()) as ArrayList<HCFPlayer?>
+    fun getNamedMembers(): MutableList<String> {
+        val playerlist =
+            members.stream().map { InjectionUtil.get(HCFPlayerHandler::class.java).byUUID(UUID.fromString(it)) }
+                .collect(Collectors.toList()) as ArrayList<HCFPlayer?>
         return playerlist.stream().filter(Objects::nonNull).map { it!!.name }.collect(Collectors.toList())
     }
 
-    fun isMember(player: Player) : Boolean {
+    fun isMember(player: Player): Boolean {
         return members.contains(player.uniqueId.toString())
     }
 
-    fun construct() : String {
+    fun construct(): String {
         return HCF.instance.gson.toJson(this)
     }
 
-    fun putTeamOnDTRRegen() {
-        dtrregen = System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1)
-    }
 
     fun save() {
         InjectionUtil.get(TeamHandler::class.java).save(this)

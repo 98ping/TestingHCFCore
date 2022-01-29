@@ -23,6 +23,6 @@ class SOTWHandler {
     }
 
     fun isSOTWEnabled(player: Player) : Boolean {
-        return sotwMap.getOrDefault(player.uniqueId, false);
+        return sotwMap.getOrDefault(player.uniqueId, false)
     }
 }

@@ -43,8 +43,7 @@ class TeamHandler {
 
     fun saveAndPull() {
         ForkJoinPool.commonPool().execute {
-            teams.clear()
-            for (document in mongoCollection.find()) teams.add(deserialize(document))
+            teams = mongoCollection.find().into(ArrayList()).map { deserialize(it) }.toCollection(ArrayList())
         }
     }
 

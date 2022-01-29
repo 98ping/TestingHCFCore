@@ -11,17 +11,31 @@ import me.ninetyeightping.hcf.timers.impl.CombatTimer
 import me.ninetyeightping.hcf.timers.impl.FHomeTimer
 import me.ninetyeightping.hcf.util.Chat
 import me.ninetyeightping.hcf.util.InjectionUtil
-import me.vaperion.blade.annotation.Command
-import me.vaperion.blade.annotation.Name
-import me.vaperion.blade.annotation.Sender
+import me.vaperion.blade.annotation.*
 import org.bukkit.World
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 
 class GenericTeamCommands {
+
+    @Command(value = ["team forcedtrregen"])
+    @Permission(value = "hcf.admin", message = "No Permission.")
+    fun forcesetdtrregen(@Sender player: Player, @Name("team")name: String) {
+        if (!InjectionUtil.get(TeamHandler::class.java).exists(name)) {
+            player.sendMessage(Chat.format("&cTeam not found."))
+            return
+        }
+
+        val team = InjectionUtil.get(TeamHandler::class.java).byName(name)
+        team!!.dtrregen = (System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1))
+        team.save()
+        player.sendMessage(Chat.format("&aPut $name on DTR regen"))
+
+    }
 
     @Command(value = ["f sethome", "team sethome", "t sethome"])
     fun sethome(@Sender player: Player) {
