@@ -22,6 +22,10 @@ object Bard : PvPClass("Bard Class", PvPClassType.BARD) {
         return !hasArmorOn(player) && listOfBards.contains(player.uniqueId)
     }
 
+    fun isInBardClass(player: Player) : Boolean {
+        return listOfBards.contains(player.uniqueId)
+    }
+
     override fun onEquip(player: Player) {
         player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1))
         player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 0))
@@ -49,10 +53,21 @@ object Bard : PvPClass("Bard Class", PvPClassType.BARD) {
     }
 
     override fun hasArmorOn(player: Player): Boolean {
-        return player.inventory.helmet.type == Material.GOLD_HELMET
-                && player.inventory.chestplate.type == Material.GOLD_CHESTPLATE
-                && player.inventory.leggings.type == Material.GOLD_LEGGINGS
-                && player.inventory.boots.type == Material.GOLD_BOOTS
+        if (player.inventory.helmet == null
+            || player.inventory.chestplate == null
+            || player.inventory.leggings == null
+            || player.inventory.boots == null) {
+            return  false
+        }
+        val helmet = player.inventory.helmet.type
+        val chestie = player.inventory.chestplate.type
+        val legs = player.inventory.leggings.type
+        val boots = player.inventory.boots.type
+
+        return (helmet != null && helmet == Material.GOLD_HELMET
+                && chestie != null && chestie == Material.GOLD_CHESTPLATE
+                && legs != null && legs == Material.GOLD_LEGGINGS
+                && boots != null && boots == Material.GOLD_BOOTS)
     }
 
     override fun onRemoval(player: Player) {

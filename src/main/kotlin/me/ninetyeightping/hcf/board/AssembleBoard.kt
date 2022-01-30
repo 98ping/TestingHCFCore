@@ -3,6 +3,7 @@ package me.ninetyeightping.hcf.board
 import io.github.thatkawaiisam.assemble.AssembleAdapter
 import me.ninetyeightping.hcf.HCF
 import me.ninetyeightping.hcf.players.HCFPlayerHandler
+import me.ninetyeightping.hcf.pvpclass.types.Bard
 import me.ninetyeightping.hcf.timers.impl.CombatTimer
 import me.ninetyeightping.hcf.timers.impl.EnderpearlTimer
 import me.ninetyeightping.hcf.timers.impl.FHomeTimer
@@ -42,6 +43,11 @@ class AssembleBoard : AssembleAdapter {
 
         if (CombatTimer.hasCooldown(player)) {
             lines.add("&4Combat: &f" + getCombatScore(player))
+        }
+
+        if (Bard.isInBardClass(player)) {
+            lines.add("&eActive Class: &6Bard")
+            lines.add("&7* &6Energy: &f" + Bard.energyMap.getOrDefault(player.uniqueId, 0))
         }
 
 
