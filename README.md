@@ -10,4 +10,6 @@ A kotlin hcf core that I made cause I was super bored. It uses gradle and has no
 - Profiling system with built-in economy
 - Statistics and kitmap mode
 - SOTW timer with /sotw enable
+- PvP Class system
+- Polished and clean looking scoreboard
 - Many more to come :^)
