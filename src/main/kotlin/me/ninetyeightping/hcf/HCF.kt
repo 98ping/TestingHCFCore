@@ -18,6 +18,7 @@ import me.ninetyeightping.hcf.events.sotw.commands.SOTWCommands
 import me.ninetyeightping.hcf.players.commands.EconomyCommands
 import me.ninetyeightping.hcf.players.listeners.HCFPlayerListener
 import me.ninetyeightping.hcf.players.stat.StatisticEntry
+import me.ninetyeightping.hcf.pvpclass.types.tasks.BardCheckTask
 import me.ninetyeightping.hcf.team.TeamHandler
 import me.ninetyeightping.hcf.team.claims.LandBoard
 import me.ninetyeightping.hcf.team.claims.listener.ClaimListener
@@ -74,22 +75,31 @@ class HCF : JavaPlugin() {
         sotwHandler = SOTWHandler()
         kothHandler = KothHandler()
         teamHandler = TeamHandler()
-
         landBoard = LandBoard()
 
         val assemble = Assemble(this, AssembleBoard())
         assemble.ticks = 2
         assemble.assembleStyle = AssembleStyle.VIPER
 
+        startPvPClassTasks()
+        registerEvents()
+        registerCommands()
+
+
+        (DTRUpdateTask()).runTaskTimer(this, 0L, 20L)
+
+    }
+
+    fun registerEvents() {
         server.pluginManager.registerEvents(HCFPlayerListener(), this)
         server.pluginManager.registerEvents(ClaimListener(), this)
         server.pluginManager.registerEvents(LandBoardListener(), this)
         server.pluginManager.registerEvents(GenericTimerListener(), this)
         server.pluginManager.registerEvents(SystemTeamClaimListener(), this)
         server.pluginManager.registerEvents(ElevatorCreateListener(), this)
+    }
 
-
-
+    fun registerCommands() {
         //commands
         Blade.of().fallbackPrefix("HCF")
             .containerCreator(BukkitCommandContainer.CREATOR)
@@ -101,10 +111,10 @@ class HCF : JavaPlugin() {
             .register(KothGenericCommands())
             .register(ElevatorSignCommands())
 
+    }
 
-
-        (DTRUpdateTask()).runTaskTimer(this, 0L, 20L)
-
+    fun startPvPClassTasks() {
+        (BardCheckTask()).runTaskTimer(this, 0L, 20L)
     }
 
 
