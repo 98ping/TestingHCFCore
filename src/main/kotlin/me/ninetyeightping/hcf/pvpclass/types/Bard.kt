@@ -8,11 +8,12 @@ import me.ninetyeightping.hcf.util.Chat
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
+import org.bukkit.event.Listener
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import java.util.*
 
-object Bard : PvPClass("Bard Class", PvPClassType.BARD) {
+object Bard : PvPClass("Bard Class", PvPClassType.BARD), Listener {
 
     var listOfBards = arrayListOf<UUID>()
     var effectRestoreTable = HashBasedTable.create<UUID, PotionEffectType, PotionEffect>()
@@ -34,10 +35,11 @@ object Bard : PvPClass("Bard Class", PvPClassType.BARD) {
         listOfBards.add(player.uniqueId)
     }
 
-    fun applyBardEffect(player: Player, effect: PotionEffect) {
+    fun applyBardEffect(player: Player, effect: PotionEffect, energy: Int) {
         for (potionEffect in player.activePotionEffects) {
             effectRestoreTable.put(player.uniqueId, potionEffect.type, potionEffect)
         }
+        energyMap[player.uniqueId] = energyMap.getOrDefault(player.uniqueId, 0) - energy
         player.addPotionEffect(effect)
         Bukkit.getScheduler().runTaskLater(HCF.instance, {
             val potioneffect = effectRestoreTable.get(player.uniqueId, effect.type) ?: return@runTaskLater
