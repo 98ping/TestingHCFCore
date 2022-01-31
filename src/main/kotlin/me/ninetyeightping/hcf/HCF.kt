@@ -18,6 +18,7 @@ import me.ninetyeightping.hcf.events.sotw.commands.SOTWCommands
 import me.ninetyeightping.hcf.players.commands.EconomyCommands
 import me.ninetyeightping.hcf.players.listeners.HCFPlayerListener
 import me.ninetyeightping.hcf.players.stat.StatisticEntry
+import me.ninetyeightping.hcf.pvpclass.types.Bard
 import me.ninetyeightping.hcf.pvpclass.types.tasks.BardCheckTask
 import me.ninetyeightping.hcf.team.TeamHandler
 import me.ninetyeightping.hcf.team.claims.LandBoard
@@ -97,6 +98,8 @@ class HCF : JavaPlugin() {
         server.pluginManager.registerEvents(GenericTimerListener(), this)
         server.pluginManager.registerEvents(SystemTeamClaimListener(), this)
         server.pluginManager.registerEvents(ElevatorCreateListener(), this)
+
+        server.pluginManager.registerEvents(Bard, this)
     }
 
     fun registerCommands() {
@@ -114,6 +117,7 @@ class HCF : JavaPlugin() {
     }
 
     fun startPvPClassTasks() {
+        Bard.loadItems()
         (BardCheckTask()).runTaskTimer(this, 0L, 20L)
     }
 

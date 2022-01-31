@@ -10,7 +10,9 @@ class BardCheckTask : BukkitRunnable() {
         for (player in Bukkit.getOnlinePlayers()) {
 
             if (Bard.energyMap.getOrDefault(player.uniqueId, 0) < 100) {
-                Bard.energyMap[player.uniqueId] = Bard.energyMap.getOrDefault(player.uniqueId, 0) + 1
+                if (Bard.isInBardClass(player)) {
+                    Bard.energyMap[player.uniqueId] = Bard.energyMap.getOrDefault(player.uniqueId, 0) + 1
+                }
             }
             if (Bard.bardClassNeedsRemoval(player)) {
                 Bard.onRemoval(player)

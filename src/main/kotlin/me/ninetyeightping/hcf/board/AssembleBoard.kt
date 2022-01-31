@@ -5,6 +5,7 @@ import me.ninetyeightping.hcf.HCF
 import me.ninetyeightping.hcf.players.HCFPlayerHandler
 import me.ninetyeightping.hcf.pvpclass.types.Bard
 import me.ninetyeightping.hcf.timers.impl.CombatTimer
+import me.ninetyeightping.hcf.timers.impl.EffectCooldownTimer
 import me.ninetyeightping.hcf.timers.impl.EnderpearlTimer
 import me.ninetyeightping.hcf.timers.impl.FHomeTimer
 import me.ninetyeightping.hcf.util.Chat
@@ -48,6 +49,9 @@ class AssembleBoard : AssembleAdapter {
         if (Bard.isInBardClass(player)) {
             lines.add("&eActive Class: &6Bard")
             lines.add("&7* &6Energy: &f" + Bard.energyMap.getOrDefault(player.uniqueId, 0))
+            if (EffectCooldownTimer.hasCooldown(player)) {
+                lines.add("&7* &6Effect: &f" + getEffectScore(player))
+            }
         }
 
 
@@ -79,6 +83,17 @@ class AssembleBoard : AssembleAdapter {
     fun getHomeScore(player: Player?): String? {
         val diff =
             FHomeTimer.cooldownMap[player!!.uniqueId]?.minus(System.currentTimeMillis())
+        if (diff!! > 0) {
+            return TimeUtils.formatIntoAbbreviatedString((diff / 1000L).toInt())
+        }
+        return null
+    }
+
+
+
+    fun getEffectScore(player: Player?): String? {
+        val diff =
+            EffectCooldownTimer.cooldownMap[player!!.uniqueId]?.minus(System.currentTimeMillis())
         if (diff!! > 0) {
             return TimeUtils.formatIntoAbbreviatedString((diff / 1000L).toInt())
         }

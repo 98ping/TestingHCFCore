@@ -4,11 +4,16 @@ import com.google.common.collect.HashBasedTable
 import me.ninetyeightping.hcf.HCF
 import me.ninetyeightping.hcf.pvpclass.PvPClass
 import me.ninetyeightping.hcf.pvpclass.PvPClassType
+import me.ninetyeightping.hcf.pvpclass.types.effects.BardEffect
+import me.ninetyeightping.hcf.timers.impl.EffectCooldownTimer
 import me.ninetyeightping.hcf.util.Chat
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.block.Action
+import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import java.util.*
@@ -18,6 +23,11 @@ object Bard : PvPClass("Bard Class", PvPClassType.BARD), Listener {
     var listOfBards = arrayListOf<UUID>()
     var effectRestoreTable = HashBasedTable.create<UUID, PotionEffectType, PotionEffect>()
     var energyMap = hashMapOf<UUID, Int>()
+    var effectMap = hashMapOf<Material, BardEffect>()
+
+    fun loadItems() {
+        effectMap[Material.SUGAR] = BardEffect(25, PotionEffect(PotionEffectType.SPEED, (5 * 20), 2))
+    }
 
     fun bardClassNeedsRemoval(player: Player) : Boolean {
         return !hasArmorOn(player) && listOfBards.contains(player.uniqueId)
@@ -39,11 +49,13 @@ object Bard : PvPClass("Bard Class", PvPClassType.BARD), Listener {
         for (potionEffect in player.activePotionEffects) {
             effectRestoreTable.put(player.uniqueId, potionEffect.type, potionEffect)
         }
+        player.removePotionEffect(effect.type)
         energyMap[player.uniqueId] = energyMap.getOrDefault(player.uniqueId, 0) - energy
         player.addPotionEffect(effect)
         Bukkit.getScheduler().runTaskLater(HCF.instance, {
-            val potioneffect = effectRestoreTable.get(player.uniqueId, effect.type) ?: return@runTaskLater
+            val potioneffect = effectRestoreTable.get(player.uniqueId, effect.type)
 
+            if (potioneffect == null) return@runTaskLater
 
             player.addPotionEffect(potioneffect)
 
@@ -79,5 +91,44 @@ object Bard : PvPClass("Bard Class", PvPClassType.BARD), Listener {
         player.sendMessage(Chat.format("&cRemoved the &6Bard &cclass"))
         listOfBards.remove(player.uniqueId)
         energyMap.remove(player.uniqueId)
+    }
+
+
+    //listener
+
+    @EventHandler
+    fun useEffect(event: PlayerInteractEvent) {
+        val player = event.player
+
+        if (event.action == Action.RIGHT_CLICK_AIR || event.action == Action.RIGHT_CLICK_BLOCK) {
+
+            if (player.itemInHand != null) {
+
+                val materialOfItemInHand = player.itemInHand.type
+
+                val bardEffectByItemInHand = effectMap.getOrDefault(materialOfItemInHand, null) ?: return
+
+                if (!isInBardClass(player)) return
+
+                if (!ensurePlayerCanUseEffect(player, bardEffectByItemInHand.energy)) {
+                    player.sendMessage(Chat.format("&cYou lack the required energy to use this buff. You need &l" + bardEffectByItemInHand.energy))
+                    return
+                }
+
+                if (EffectCooldownTimer.hasCooldown(player)) {
+                    player.sendMessage(Chat.format("&cYou are currently on effect colodown"))
+                    return
+                }
+
+                applyBardEffect(player, bardEffectByItemInHand.potionEffect, bardEffectByItemInHand.energy)
+                EffectCooldownTimer.addCooldown(player)
+
+                player.getNearbyEntities(10.0, 10.0, 10.0).stream().filter { it is Player }.forEach {
+                    val player = it as Player
+
+                    applyBardEffect(player, bardEffectByItemInHand.potionEffect, bardEffectByItemInHand.energy)
+                }
+            }
+        }
     }
 }
