@@ -73,7 +73,7 @@ class ClaimListener : Listener {
                 if (claimSession == null) return
 
                 claimSession.position1 = event.clickedBlock.location
-                player.sendMessage(Chat.format("&aUpdated position 1"))
+                player.sendMessage(Chat.format("&aUpdated position 1 to &f(" + event.clickedBlock.location.blockX + "," + event.clickedBlock.location.blockY + "," + event.clickedBlock.location.blockZ + ")"))
 
 
             }
@@ -85,7 +85,7 @@ class ClaimListener : Listener {
                 if (claimSession == null) return
 
                 claimSession.position2 = event.clickedBlock.location
-                player.sendMessage(Chat.format("&aUpdated position 2"))
+                player.sendMessage(Chat.format("&aUpdated position 2 to &f(" + event.clickedBlock.location.blockX + "," + event.clickedBlock.location.blockY + "," + event.clickedBlock.location.blockZ + ")"))
 
 
             }
@@ -100,10 +100,10 @@ class ClaimListener : Listener {
 
 
                     val loc1 = claimSession.position1!!.clone()
-                    loc1.y = 256.0;
+                    loc1.y = 256.0
 
                     val loc2 = claimSession.position2!!.clone()
-                    loc2.y = 0.0;
+                    loc2.y = 0.0
 
                     if (loc1.world != loc2.world) return
 
@@ -117,6 +117,8 @@ class ClaimListener : Listener {
                     HCF.instance.landBoard.claims[claim] = team
                     team.save()
 
+                    player.itemInHand = null
+                    player.updateInventory()
                     HCF.instance.landBoard.sessions.remove(player.uniqueId)
                     player.sendMessage(Chat.format("&aAdded a team claim for " + team.displayName))
 

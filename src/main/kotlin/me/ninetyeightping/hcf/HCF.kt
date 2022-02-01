@@ -9,12 +9,12 @@ import com.mongodb.client.MongoDatabase
 import io.github.thatkawaiisam.assemble.Assemble
 import io.github.thatkawaiisam.assemble.AssembleStyle
 import me.ninetyeightping.hcf.board.AssembleBoard
-import me.ninetyeightping.hcf.elevator.ElevatorSignCommands
 import me.ninetyeightping.hcf.elevator.listeners.ElevatorCreateListener
 import me.ninetyeightping.hcf.events.koth.commands.KothGenericCommands
 import me.ninetyeightping.hcf.events.koth.types.KothHandler
 import me.ninetyeightping.hcf.events.sotw.SOTWHandler
 import me.ninetyeightping.hcf.events.sotw.commands.SOTWCommands
+import me.ninetyeightping.hcf.events.sotw.listeners.SOTWDamageListener
 import me.ninetyeightping.hcf.players.commands.EconomyCommands
 import me.ninetyeightping.hcf.players.listeners.HCFPlayerListener
 import me.ninetyeightping.hcf.players.stat.StatisticEntry
@@ -36,8 +36,10 @@ import me.ninetyeightping.hcf.util.serialize.StatisticSerializer
 import me.vaperion.blade.Blade
 import me.vaperion.blade.bindings.impl.BukkitBindings
 import me.vaperion.blade.container.impl.BukkitCommandContainer
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.plugin.java.JavaPlugin
+import java.util.*
 
 
 class HCF : JavaPlugin() {
@@ -91,6 +93,10 @@ class HCF : JavaPlugin() {
 
     }
 
+    override fun onDisable() {
+        Bard.listOfBards.stream().map { Bukkit.getPlayer(it) }.filter(Objects::nonNull).forEach { Bard.onRemoval(it) }
+    }
+
     fun registerEvents() {
         server.pluginManager.registerEvents(HCFPlayerListener(), this)
         server.pluginManager.registerEvents(ClaimListener(), this)
@@ -98,6 +104,7 @@ class HCF : JavaPlugin() {
         server.pluginManager.registerEvents(GenericTimerListener(), this)
         server.pluginManager.registerEvents(SystemTeamClaimListener(), this)
         server.pluginManager.registerEvents(ElevatorCreateListener(), this)
+        server.pluginManager.registerEvents(SOTWDamageListener(), this)
 
         server.pluginManager.registerEvents(Bard, this)
     }
@@ -112,7 +119,6 @@ class HCF : JavaPlugin() {
             .register(SOTWCommands())
             .register(SystemTeamCommands())
             .register(KothGenericCommands())
-            .register(ElevatorSignCommands())
 
     }
 

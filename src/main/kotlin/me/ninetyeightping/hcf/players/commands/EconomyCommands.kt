@@ -4,10 +4,7 @@ import me.ninetyeightping.hcf.HCF
 import me.ninetyeightping.hcf.players.HCFPlayerHandler
 import me.ninetyeightping.hcf.util.Chat
 import me.ninetyeightping.hcf.util.InjectionUtil
-import me.vaperion.blade.annotation.Command
-import me.vaperion.blade.annotation.Name
-import me.vaperion.blade.annotation.Permission
-import me.vaperion.blade.annotation.Sender
+import me.vaperion.blade.annotation.*
 import org.bukkit.entity.Player
 
 
@@ -24,5 +21,18 @@ class EconomyCommands {
         hcfplayer.balance = (hcfplayer.balance + amount)
         hcfplayer.push()
         sender.sendMessage(Chat.format("&aAdded $" + amount + " to " + target.name + "'s balance"))
+    }
+
+    @Command(value = ["bal", "balance"])
+    fun bal(@Sender sender: Player, @Optional("self") target: Player) {
+
+        val hcfplayerSender = InjectionUtil.get(HCFPlayerHandler::class.java).byPlayer(sender)
+        val hcfplayerTarget = InjectionUtil.get(HCFPlayerHandler::class.java).byPlayer(target)
+
+        if (hcfplayerSender != null && hcfplayerTarget == null) {
+            sender.sendMessage(Chat.format("&c" + hcfplayerSender.name + "'s Balance: &f$" + hcfplayerSender.balance))
+        } else {
+            sender.sendMessage(Chat.format("&c" + hcfplayerTarget!!.name + "'s Balance: &f$" + hcfplayerTarget!!.balance))
+        }
     }
 }

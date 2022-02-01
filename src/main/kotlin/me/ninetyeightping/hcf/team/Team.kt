@@ -90,7 +90,9 @@ data class Team(
         sendTo.sendMessage(Chat.format("&eClaims: &f" + team.claims.size))
         sendTo.sendMessage(Chat.format("&eBalance: &f" + team.balance))
         sendTo.sendMessage(Chat.format("&eDTR: &f" + team.dtr))
-        sendTo.sendMessage(Chat.format("&eDTR Regen: &f" + getDTRRegenScore(team.dtrregen)))
+        if (dtrregen != 0L) {
+            sendTo.sendMessage(Chat.format("&eDTR Regen: &f" + getDTRRegenScore(team.dtrregen)))
+        }
         sendTo.sendMessage(Chat.format("&7&m-------------------"))
     }
 

@@ -53,11 +53,12 @@ object Bard : PvPClass("Bard Class", PvPClassType.BARD), Listener {
         energyMap[player.uniqueId] = energyMap.getOrDefault(player.uniqueId, 0) - energy
         player.addPotionEffect(effect)
         Bukkit.getScheduler().runTaskLater(HCF.instance, {
-            val potioneffect = effectRestoreTable.get(player.uniqueId, effect.type)
+            val potioneffect = effectRestoreTable.remove(player.uniqueId, effect.type)
 
             if (potioneffect == null) return@runTaskLater
 
             player.addPotionEffect(potioneffect)
+            println("Restored potion effect for " + player.name + " type: " + potioneffect.type)
 
         }, (effect.duration).toLong())
     }
@@ -122,6 +123,13 @@ object Bard : PvPClass("Bard Class", PvPClassType.BARD), Listener {
 
                 applyBardEffect(player, bardEffectByItemInHand.potionEffect, bardEffectByItemInHand.energy)
                 EffectCooldownTimer.addCooldown(player)
+
+                if (player.itemInHand.amount > 1) {
+                    player.itemInHand.amount = player.itemInHand.amount - 1
+                } else {
+                    player.itemInHand = null
+                }
+                player.updateInventory()
 
                 player.getNearbyEntities(10.0, 10.0, 10.0).stream().filter { it is Player }.forEach {
                     val player = it as Player
