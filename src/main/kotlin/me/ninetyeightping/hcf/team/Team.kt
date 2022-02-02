@@ -64,6 +64,13 @@ data class Team(
         return "&c$fakeName"
     }
 
+    fun registerPlayerDeath(player: Player) {
+        dtr -= 1.1
+        dtrregen = System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1)
+        sendGlobalTeamMessage("&c" + player.name + " &chas died and lost you &f1.1 DTR")
+        sendGlobalTeamMessage("&cNew DTR: &f$dtr")
+    }
+
     fun sendGlobalTeamMessage(message: String) {
         val players = members.map { Bukkit.getPlayer(UUID.fromString(it)) }.filter { Objects.nonNull(it) }
             .toCollection(ArrayList())

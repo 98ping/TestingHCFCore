@@ -4,6 +4,7 @@ import me.ninetyeightping.hcf.HCF
 import me.ninetyeightping.hcf.players.HCFPlayer
 import me.ninetyeightping.hcf.players.HCFPlayerHandler
 import me.ninetyeightping.hcf.players.stat.StatisticEntry
+import me.ninetyeightping.hcf.team.TeamHandler
 import me.ninetyeightping.hcf.timers.impl.EnderpearlTimer
 import me.ninetyeightping.hcf.util.Chat
 import me.ninetyeightping.hcf.util.InjectionUtil
@@ -13,6 +14,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
+import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerJoinEvent
@@ -28,6 +30,32 @@ class HCFPlayerListener : Listener {
                     EnderpearlTimer.addCooldown(player)
                 }
             }
+        }
+    }
+
+    @EventHandler
+    fun die(event: PlayerDeathEvent) {
+        val player = event.entity
+
+        val hcfplayerForEntity = InjectionUtil.get(HCFPlayerHandler::class.java).byPlayer(player) ?: return
+
+        hcfplayerForEntity.stats.deaths = (hcfplayerForEntity.stats.deaths + 1)
+        if (hcfplayerForEntity.stats.killstreak > 0) {
+            hcfplayerForEntity.stats.killstreak = 0
+        }
+        hcfplayerForEntity.push()
+
+        val teamToReduceDTR = InjectionUtil.get(TeamHandler::class.java).byPlayer(player) ?: return
+
+        teamToReduceDTR.registerPlayerDeath(player)
+
+        val killer = event.entity.killer
+        if (killer != null) {
+
+            val hcfplayerForKiller = InjectionUtil.get(HCFPlayerHandler::class.java).byPlayer(killer) ?: return
+            hcfplayerForKiller.stats.kills = hcfplayerForKiller.stats.kills + 1
+            hcfplayerForKiller.stats.killstreak = hcfplayerForKiller.stats.killstreak + 1
+            hcfplayerForKiller.push()
         }
     }
 
