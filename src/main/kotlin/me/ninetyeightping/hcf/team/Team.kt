@@ -65,10 +65,11 @@ data class Team(
     }
 
     fun registerPlayerDeath(player: Player) {
-        dtr -= 1.1
+        dtr = (dtr - 1.1)
         dtrregen = System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1)
         sendGlobalTeamMessage("&c" + player.name + " &chas died and lost you &f1.1 DTR")
         sendGlobalTeamMessage("&cNew DTR: &f$dtr")
+        save()
     }
 
     fun sendGlobalTeamMessage(message: String) {

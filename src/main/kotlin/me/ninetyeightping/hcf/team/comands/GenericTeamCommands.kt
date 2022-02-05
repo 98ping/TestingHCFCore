@@ -156,6 +156,7 @@ class GenericTeamCommands {
         tryingToAcceptTeam.setMaximumDTR()
         tryingToAcceptTeam.save()
         tryingToAcceptTeam.sendGlobalTeamMessage("&e" + sender.name + " &ehas joined the team!")
+        sender.sendMessage(Chat.format("&aJoined the team!"))
     }
 
     @Command(value = ["team invite", "f invite", "t invite"])
@@ -173,7 +174,7 @@ class GenericTeamCommands {
             return
         }
 
-        if (!team.subLeaders.contains(sender.uniqueId.toString())) {
+        if (!team.subLeaders.contains(sender.uniqueId.toString()) && !team.leader.equals(sender.uniqueId.toString())) {
             sender.sendMessage(Chat.format("&cYou must be a subleader to invite a user"))
             return
         }
@@ -207,7 +208,7 @@ class GenericTeamCommands {
     @Command(value = ["team", "f", "t"])
     fun info(@Sender sender: Player) {
         sender.sendMessage(Chat.format("&eFaction Information"))
-        sender.sendMessage(" ")
+        sender.sendMessage("&7&m-------------------------------------")
         sender.sendMessage(Chat.format("&6Normal Commands"))
         sender.sendMessage(Chat.format("&e/team create"))
         sender.sendMessage(Chat.format("&e/team disband"))
@@ -220,6 +221,7 @@ class GenericTeamCommands {
         sender.sendMessage(Chat.format("&e/team invite"))
         sender.sendMessage(Chat.format("&e/team kick"))
         sender.sendMessage(Chat.format("&e/team sethome"))
+        sender.sendMessage("&7&m-------------------------------------")
 
     }
 

@@ -27,6 +27,10 @@ object Bard : PvPClass("Bard Class", PvPClassType.BARD), Listener {
 
     fun loadItems() {
         effectMap[Material.SUGAR] = BardEffect(25, PotionEffect(PotionEffectType.SPEED, (5 * 20), 2))
+        effectMap[Material.BLAZE_POWDER] = BardEffect(45, PotionEffect(PotionEffectType.SPEED, (5 * 20), 1))
+        effectMap[Material.IRON_INGOT] = BardEffect(30, PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, (5 * 20), 2))
+        effectMap[Material.MAGMA_CREAM] = BardEffect(20, PotionEffect(PotionEffectType.FIRE_RESISTANCE, (5 * 20), 0))
+        effectMap[Material.FEATHER] = BardEffect(25, PotionEffect(PotionEffectType.JUMP, (5 * 20), 4))
     }
 
     fun bardClassNeedsRemoval(player: Player) : Boolean {

@@ -15,10 +15,16 @@ class SOTWDamageListener : Listener {
     fun damage(event: EntityDamageByEntityEvent) {
         if (event.damager is Player && event.entity is Player) {
             val player = event.entity as Player
+            val damager = event.damager as Player
 
-            if (HCF.instance.sotwHandler.serverIsOnSOTWTimer() && !HCF.instance.sotwHandler.isSOTWEnabled(player)) {
-                player.sendMessage(Chat.format("&cYou cannot damage players during &a&lSOTW"))
-                event.isCancelled = true
+            if (HCF.instance.sotwHandler.serverIsOnSOTWTimer()) {
+                if (!HCF.instance.sotwHandler.isSOTWEnabled(player) && HCF.instance.sotwHandler.isSOTWEnabled(damager)) {
+                    damager.sendMessage(Chat.format("&cYou cannot damage non &a&lSOTW Enabled &cusers"))
+                    event.isCancelled = true
+                } else if (HCF.instance.sotwHandler.isSOTWEnabled(player) && !HCF.instance.sotwHandler.isSOTWEnabled(damager)) {
+                    damager.sendMessage(Chat.format("&cYou cannot damage non &a&lSOTW Enabled &cusers"))
+                    event.isCancelled = true
+                }
             }
         }
     }

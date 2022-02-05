@@ -52,7 +52,11 @@ class HCFPlayerListener : Listener {
         val killer = event.entity.killer
         if (killer != null) {
 
-            val hcfplayerForKiller = InjectionUtil.get(HCFPlayerHandler::class.java).byPlayer(killer) ?: return
+            val hcfplayerForKiller = InjectionUtil.get(HCFPlayerHandler::class.java).byPlayer(killer)
+            if (hcfplayerForKiller == null) {
+                println("HCFPlayer for killer is null.")
+                return
+            }
             hcfplayerForKiller.stats.kills = hcfplayerForKiller.stats.kills + 1
             hcfplayerForKiller.stats.killstreak = hcfplayerForKiller.stats.killstreak + 1
             hcfplayerForKiller.push()
