@@ -32,7 +32,7 @@ class SystemTeamClaimListener : Listener {
 
 
                 claimSession.position1 = event.clickedBlock.location
-                player.sendMessage(Chat.format("&aUpdated position 1 to &f(" + event.clickedBlock.location.blockX + "," + event.clickedBlock.location.blockY + "," + event.clickedBlock.location.blockZ + ")"))
+                player.sendMessage(Chat.format("&aUpdated position 1 to &f(" + event.clickedBlock.location.blockX + ", " + event.clickedBlock.location.blockY + ", " + event.clickedBlock.location.blockZ + ")"))
 
 
             }
@@ -42,7 +42,7 @@ class SystemTeamClaimListener : Listener {
                 if (claimSession == null) return
 
                 claimSession.position2 = event.clickedBlock.location
-                player.sendMessage(Chat.format("&aUpdated position 2 to &f(" + event.clickedBlock.location.blockX + "," + event.clickedBlock.location.blockY + "," + event.clickedBlock.location.blockZ + ")"))
+                player.sendMessage(Chat.format("&aUpdated position 2 to &f(" + event.clickedBlock.location.blockX + ", " + event.clickedBlock.location.blockY + ", " + event.clickedBlock.location.blockZ + ")"))
 
 
             }

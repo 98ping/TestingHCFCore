@@ -3,6 +3,7 @@ package me.ninetyeightping.hcf.team.claims.listener
 import me.ninetyeightping.hcf.HCF
 import me.ninetyeightping.hcf.team.TeamHandler
 import me.ninetyeightping.hcf.team.claims.LandBoard
+import me.ninetyeightping.hcf.team.system.flags.Flag
 import me.ninetyeightping.hcf.util.Chat
 import me.ninetyeightping.hcf.util.Cuboid
 import me.ninetyeightping.hcf.util.InjectionUtil
@@ -14,6 +15,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
+import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import java.util.*
 
@@ -22,6 +24,8 @@ class ClaimListener : Listener {
     companion object {
         val claimWand = ItemBuilder.of(Material.GOLD_HOE).name("&cClaiming Wand").setUnbreakable(true).build()
     }
+
+
 
     @EventHandler
     fun tryAndPlaceInClaim(event: BlockPlaceEvent) {
@@ -37,6 +41,15 @@ class ClaimListener : Listener {
                     event.player.sendMessage(Chat.format("&eYou cannot place blocks inside of " + team.color + team.fakeName + "&e's claim"))
                 }
             }
+        }
+    }
+
+    @EventHandler
+    fun tryAndTakeDamageInSpawnRegion(event: EntityDamageEvent) {
+        val teamByLocation = InjectionUtil.get(LandBoard::class.java).teamByClaim(InjectionUtil.get(LandBoard::class.java).claimByLocation(event.entity.location)!!)
+
+        if (teamByLocation != null && teamByLocation.masks.contains(Flag.SAFEZONE)) {
+            event.isCancelled = true
         }
     }
 
@@ -73,7 +86,7 @@ class ClaimListener : Listener {
                 if (claimSession == null) return
 
                 claimSession.position1 = event.clickedBlock.location
-                player.sendMessage(Chat.format("&aUpdated position 1 to &f(" + event.clickedBlock.location.blockX + "," + event.clickedBlock.location.blockY + "," + event.clickedBlock.location.blockZ + ")"))
+                player.sendMessage(Chat.format("&aUpdated position 1 to &f(" + event.clickedBlock.location.blockX + ", " + event.clickedBlock.location.blockY + ", " + event.clickedBlock.location.blockZ + ")"))
 
 
             }
@@ -85,7 +98,7 @@ class ClaimListener : Listener {
                 if (claimSession == null) return
 
                 claimSession.position2 = event.clickedBlock.location
-                player.sendMessage(Chat.format("&aUpdated position 2 to &f(" + event.clickedBlock.location.blockX + "," + event.clickedBlock.location.blockY + "," + event.clickedBlock.location.blockZ + ")"))
+                player.sendMessage(Chat.format("&aUpdated position 2 to &f(" + event.clickedBlock.location.blockX + ", " + event.clickedBlock.location.blockY + ", " + event.clickedBlock.location.blockZ + ")"))
 
 
             }
@@ -105,7 +118,10 @@ class ClaimListener : Listener {
                     val loc2 = claimSession.position2!!.clone()
                     loc2.y = 0.0
 
-                    if (loc1.world != loc2.world) return
+                    if (loc1.world != loc2.world) {
+                        player.sendMessage(Chat.format("&cOne of your claim positions are not in the same word as the other!"))
+                        return
+                    }
 
                     if (!InjectionUtil.get(LandBoard::class.java).verifyCanClaim(loc1) || !InjectionUtil.get(LandBoard::class.java).verifyCanClaim(loc2)) {
                         player.sendMessage(Chat.format("&cOne or more of the locations in your claim are unable to be claimed!"))
@@ -113,6 +129,8 @@ class ClaimListener : Listener {
                     }
 
                     val claim = Cuboid(loc1, loc2)
+
+
                     team.claims.add(claim)
                     HCF.instance.landBoard.claims[claim] = team
                     team.save()

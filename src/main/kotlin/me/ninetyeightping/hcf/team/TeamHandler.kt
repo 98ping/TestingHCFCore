@@ -9,7 +9,6 @@ import org.bukkit.entity.Player
 import org.springframework.stereotype.Service
 import java.util.*
 import java.util.concurrent.ForkJoinPool
-import javax.print.Doc
 import kotlin.collections.ArrayList
 
 
@@ -41,15 +40,20 @@ class TeamHandler {
         return teams.stream().filter { it.displayName.equals(name, ignoreCase = true) }.findFirst().orElse(null) != null
     }
 
-    fun saveAndPull() {
+    fun pull() {
         ForkJoinPool.commonPool().execute {
             teams = mongoCollection.find().into(ArrayList()).map { deserialize(it) }.toCollection(ArrayList())
         }
     }
 
+    fun disbandTeam(team: Team) {
+        mongoCollection.deleteOne(Filters.eq("_id", team.id))
+        pull()
+    }
+
     fun createTeam(team: Team) {
         save(team)
-        saveAndPull()
+        pull()
     }
 
     fun save(team: Team) {
@@ -60,7 +64,7 @@ class TeamHandler {
         val finaldoc = Document("\$set", doc)
 
         mongoCollection.updateOne(query, finaldoc, UpdateOptions().upsert(true))
-        saveAndPull()
+        pull()
     }
 
     fun deserialize(document: Document) : Team {

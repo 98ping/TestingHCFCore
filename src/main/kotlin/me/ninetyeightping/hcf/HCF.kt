@@ -28,12 +28,15 @@ import me.ninetyeightping.hcf.team.comands.GenericTeamCommands
 import me.ninetyeightping.hcf.team.dtr.DTRUpdateTask
 import me.ninetyeightping.hcf.team.system.claims.listeners.SystemTeamClaimListener
 import me.ninetyeightping.hcf.team.system.commands.SystemTeamCommands
+import me.ninetyeightping.hcf.team.system.commands.adapters.FlagTypeAdapter
+import me.ninetyeightping.hcf.team.system.flags.Flag
 import me.ninetyeightping.hcf.timers.listeners.GenericTimerListener
 import me.ninetyeightping.hcf.util.Cuboid
 import me.ninetyeightping.hcf.util.serialize.CuboidSerializer
 import me.ninetyeightping.hcf.util.serialize.LocationSerializer
 import me.ninetyeightping.hcf.util.serialize.StatisticSerializer
 import me.vaperion.blade.Blade
+import me.vaperion.blade.argument.BladeProvider
 import me.vaperion.blade.bindings.impl.BukkitBindings
 import me.vaperion.blade.container.impl.BukkitCommandContainer
 import org.bukkit.Bukkit
@@ -113,6 +116,7 @@ class HCF : JavaPlugin() {
         //commands
         Blade.of().fallbackPrefix("HCF")
             .containerCreator(BukkitCommandContainer.CREATOR)
+            .bind(Flag::class.java, FlagTypeAdapter())
             .binding(BukkitBindings()).build()
             .register(GenericTeamCommands())
             .register(EconomyCommands())

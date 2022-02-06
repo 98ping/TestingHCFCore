@@ -4,6 +4,7 @@ import me.ninetyeightping.hcf.HCF
 import me.ninetyeightping.hcf.players.HCFPlayerHandler
 import me.ninetyeightping.hcf.team.Team
 import me.ninetyeightping.hcf.team.TeamHandler
+import me.ninetyeightping.hcf.team.claims.LandBoard
 import me.ninetyeightping.hcf.team.claims.listener.ClaimListener
 import me.ninetyeightping.hcf.team.claims.player.ClaimSession
 import me.ninetyeightping.hcf.team.types.FactionType
@@ -174,7 +175,7 @@ class GenericTeamCommands {
             return
         }
 
-        if (!team.subLeaders.contains(sender.uniqueId.toString()) && !team.leader.equals(sender.uniqueId.toString())) {
+        if (!team.subLeaders.contains(sender.uniqueId.toString()) || !team.leader.equals(sender.uniqueId.toString())) {
             sender.sendMessage(Chat.format("&cYou must be a subleader to invite a user"))
             return
         }
@@ -189,7 +190,11 @@ class GenericTeamCommands {
     @Command(value = ["team who", "f who", "t who"])
     fun teamInfo(@Sender sender: Player, @Name("target") player: String) {
 
-        val hcfplayer = InjectionUtil.get(HCFPlayerHandler::class.java).byPlayerName(player) ?: return
+        val hcfplayer = InjectionUtil.get(HCFPlayerHandler::class.java).byPlayerName(player)
+        if (hcfplayer == null) {
+            sender.sendMessage(Chat.format("&cNo target with the name $player found"))
+            return
+        }
 
         val teambyPlayer = InjectionUtil.get(TeamHandler::class.java).byUUID(UUID.fromString(hcfplayer.uuid))
 
@@ -281,6 +286,26 @@ class GenericTeamCommands {
         InjectionUtil.get(TeamHandler::class.java).createTeam(team)
         player.sendMessage(Chat.format("&eCreated a team with the name of $name"))
 
+    }
+
+    @Command(value = ["team disband", "f disband", "t disband"])
+    fun disbandTeam(@Sender player: Player) {
+
+        val teamForPlayer = InjectionUtil.get(TeamHandler::class.java).byPlayer(player)
+
+        if (teamForPlayer == null) {
+            player.sendMessage(Chat.format("&cYou are not on a team"))
+            return
+        }
+
+        if (!teamForPlayer.leader.equals(player.uniqueId.toString(), ignoreCase = true)) {
+            player.sendMessage(Chat.format("&cYou are not the leader of this faction"))
+            return
+        }
+
+        teamForPlayer.sendGlobalTeamMessage("&eThe team has been disbanded")
+        teamForPlayer.claims.forEach { InjectionUtil.get(LandBoard::class.java).claims.remove(it) }
+        InjectionUtil.get(TeamHandler::class.java).disbandTeam(teamForPlayer)
     }
 
 }

@@ -5,6 +5,7 @@ import me.ninetyeightping.hcf.team.Team
 import me.ninetyeightping.hcf.team.TeamHandler
 import me.ninetyeightping.hcf.team.system.claims.SystemTeamClaimSession
 import me.ninetyeightping.hcf.team.system.claims.listeners.SystemTeamClaimListener
+import me.ninetyeightping.hcf.team.system.flags.Flag
 import me.ninetyeightping.hcf.team.types.FactionType
 import me.ninetyeightping.hcf.util.Chat
 import me.ninetyeightping.hcf.util.InjectionUtil
@@ -74,6 +75,20 @@ class SystemTeamCommands {
         team.save()
         player.sendMessage(Chat.format("&aUpdated fakename of $name"))
 
+    }
+
+    @Command(value = ["systemteam addflag"])
+    @Permission(value = "hcf.systemteams.admin", message = "No Permission.")
+    fun flag(@Sender player: Player, @Name("team")name: String, @Name("flag")flag: Flag) {
+        if (!InjectionUtil.get(TeamHandler::class.java).exists(name)) {
+            player.sendMessage(Chat.format("&cSystem team not found."))
+            return
+        }
+
+        val team = InjectionUtil.get(TeamHandler::class.java).byName(name)
+        team!!.masks.add(flag)
+        team.save()
+        player.sendMessage(Chat.format("&aAdded flag to $name"))
     }
 
     @Command(value = ["systemteam setcolor"])

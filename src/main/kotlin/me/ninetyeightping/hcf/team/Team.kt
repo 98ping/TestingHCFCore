@@ -37,6 +37,12 @@ data class Team(
 ) {
 
 
+
+    fun isRaidable() : Boolean {
+        return dtr <= 0
+    }
+
+
     fun setMaximumDTR() {
         if (dtrregen != 0L) {
             dtr = calculateMaximumDTR()
