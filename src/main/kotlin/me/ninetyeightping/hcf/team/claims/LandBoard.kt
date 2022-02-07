@@ -36,6 +36,10 @@ class LandBoard {
         }
     }
 
+    fun getTeamClaimFromPlayer(location: Location) : Team? {
+        return teamByClaim(claimByLocation(location)!!)
+    }
+
     fun verifyCanClaim(location: Location) : Boolean {
         if (isWarzone(location)) return false
 

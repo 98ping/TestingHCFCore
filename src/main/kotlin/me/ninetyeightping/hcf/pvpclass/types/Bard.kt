@@ -5,8 +5,10 @@ import me.ninetyeightping.hcf.HCF
 import me.ninetyeightping.hcf.pvpclass.PvPClass
 import me.ninetyeightping.hcf.pvpclass.PvPClassType
 import me.ninetyeightping.hcf.pvpclass.types.effects.BardEffect
+import me.ninetyeightping.hcf.team.TeamHandler
 import me.ninetyeightping.hcf.timers.impl.EffectCooldownTimer
 import me.ninetyeightping.hcf.util.Chat
+import me.ninetyeightping.hcf.util.InjectionUtil
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -136,9 +138,15 @@ object Bard : PvPClass("Bard Class", PvPClassType.BARD), Listener {
                 player.updateInventory()
 
                 player.getNearbyEntities(10.0, 10.0, 10.0).stream().filter { it is Player }.forEach {
-                    val player = it as Player
+                    val player2 = it as Player
 
-                    applyBardEffect(player, bardEffectByItemInHand.potionEffect, bardEffectByItemInHand.energy)
+                    val playerTeam = InjectionUtil.get(TeamHandler::class.java).byPlayer(player2)
+                    val originalPlayerTeam = InjectionUtil.get(TeamHandler::class.java).byPlayer(player)
+
+                    if (playerTeam == originalPlayerTeam) {
+
+                        applyBardEffect(player2, bardEffectByItemInHand.potionEffect, bardEffectByItemInHand.energy)
+                    }
                 }
             }
         }
