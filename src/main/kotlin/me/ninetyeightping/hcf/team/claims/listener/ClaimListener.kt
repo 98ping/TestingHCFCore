@@ -37,7 +37,7 @@ class ClaimListener : Listener {
                 val claim = InjectionUtil.get(LandBoard::class.java).claimByLocation(location)
                 val team = InjectionUtil.get(LandBoard::class.java).teamByClaim(claim!!)
 
-                if (!team!!.isMember(event.player)) {
+                if (!team!!.isMember(event.player) && !team.isRaidable()) {
                     event.isCancelled = true
                     event.player.sendMessage(Chat.format("&eYou cannot place blocks inside of " + team.color + team.fakeName + "&e's claim"))
                 }
@@ -75,10 +75,12 @@ class ClaimListener : Listener {
 
         @EventHandler
         fun tryAndTakeDamageInSpawnRegion(event: EntityDamageEvent) {
-            val teamByLocation = InjectionUtil.get(LandBoard::class.java)
-                .teamByClaim(InjectionUtil.get(LandBoard::class.java).claimByLocation(event.entity.location)!!)
 
-            if (teamByLocation != null && teamByLocation.masks.contains(Flag.SAFEZONE)) {
+            if (InjectionUtil.get(LandBoard::class.java)
+                    .teamByClaim(InjectionUtil.get(LandBoard::class.java).claimByLocation(event.entity.location)!!) != null &&
+
+                InjectionUtil.get(LandBoard::class.java)
+                    .teamByClaim(InjectionUtil.get(LandBoard::class.java).claimByLocation(event.entity.location)!!)!!.masks.contains(Flag.SAFEZONE)) {
                 event.isCancelled = true
             }
         }
@@ -92,7 +94,7 @@ class ClaimListener : Listener {
                     val claim = InjectionUtil.get(LandBoard::class.java).claimByLocation(location)
                     val team = InjectionUtil.get(LandBoard::class.java).teamByClaim(claim!!)
 
-                    if (!team!!.isMember(event.player)) {
+                    if (!team!!.isMember(event.player) && !team.isRaidable()) {
                         event.isCancelled = true
                         event.player.sendMessage(Chat.format("&eYou cannot break blocks inside of " + team.color + team.fakeName + "&e's claim"))
                     }

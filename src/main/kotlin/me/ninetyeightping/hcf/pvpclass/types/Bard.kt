@@ -4,7 +4,7 @@ import com.google.common.collect.HashBasedTable
 import me.ninetyeightping.hcf.HCF
 import me.ninetyeightping.hcf.pvpclass.PvPClass
 import me.ninetyeightping.hcf.pvpclass.PvPClassType
-import me.ninetyeightping.hcf.pvpclass.types.effects.BardEffect
+import me.ninetyeightping.hcf.pvpclass.types.effects.GenericClassEffect
 import me.ninetyeightping.hcf.team.TeamHandler
 import me.ninetyeightping.hcf.timers.impl.EffectCooldownTimer
 import me.ninetyeightping.hcf.util.Chat
@@ -25,14 +25,14 @@ object Bard : PvPClass("Bard Class", PvPClassType.BARD), Listener {
     var listOfBards = arrayListOf<UUID>()
     var effectRestoreTable = HashBasedTable.create<UUID, PotionEffectType, PotionEffect>()
     var energyMap = hashMapOf<UUID, Int>()
-    var effectMap = hashMapOf<Material, BardEffect>()
+    var effectMap = hashMapOf<Material, GenericClassEffect>()
 
     fun loadItems() {
-        effectMap[Material.SUGAR] = BardEffect(25, PotionEffect(PotionEffectType.SPEED, (5 * 20), 2))
-        effectMap[Material.BLAZE_POWDER] = BardEffect(45, PotionEffect(PotionEffectType.SPEED, (5 * 20), 1))
-        effectMap[Material.IRON_INGOT] = BardEffect(30, PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, (5 * 20), 2))
-        effectMap[Material.MAGMA_CREAM] = BardEffect(20, PotionEffect(PotionEffectType.FIRE_RESISTANCE, (5 * 20), 0))
-        effectMap[Material.FEATHER] = BardEffect(25, PotionEffect(PotionEffectType.JUMP, (5 * 20), 4))
+        effectMap[Material.SUGAR] = GenericClassEffect(25, PotionEffect(PotionEffectType.SPEED, (5 * 20), 2))
+        effectMap[Material.BLAZE_POWDER] = GenericClassEffect(45, PotionEffect(PotionEffectType.SPEED, (5 * 20), 1))
+        effectMap[Material.IRON_INGOT] = GenericClassEffect(30, PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, (5 * 20), 2))
+        effectMap[Material.MAGMA_CREAM] = GenericClassEffect(20, PotionEffect(PotionEffectType.FIRE_RESISTANCE, (5 * 20), 0))
+        effectMap[Material.FEATHER] = GenericClassEffect(25, PotionEffect(PotionEffectType.JUMP, (5 * 20), 4))
     }
 
     fun bardClassNeedsRemoval(player: Player) : Boolean {

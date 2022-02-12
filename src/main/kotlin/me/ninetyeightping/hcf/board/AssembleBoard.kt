@@ -1,8 +1,10 @@
 package me.ninetyeightping.hcf.board
 
 import io.github.thatkawaiisam.assemble.AssembleAdapter
+import javafx.scene.shape.Arc
 import me.ninetyeightping.hcf.HCF
 import me.ninetyeightping.hcf.players.HCFPlayerHandler
+import me.ninetyeightping.hcf.pvpclass.types.Archer
 import me.ninetyeightping.hcf.pvpclass.types.Bard
 import me.ninetyeightping.hcf.timers.impl.CombatTimer
 import me.ninetyeightping.hcf.timers.impl.EffectCooldownTimer
@@ -44,6 +46,13 @@ class AssembleBoard : AssembleAdapter {
 
         if (CombatTimer.hasCooldown(player)) {
             lines.add("&4Combat: &f" + getCombatScore(player))
+        }
+        if (Archer.isInArcherClass(player)) {
+            lines.add("&eActive Class: &5Archer")
+            lines.add("&7* &6Archer Energy: &f" + Archer.energyMap.getOrDefault(player.uniqueId, 0))
+            if (EffectCooldownTimer.hasCooldown(player)) {
+                lines.add("&7* &6Effect: &f" + getEffectScore(player))
+            }
         }
 
         if (Bard.isInBardClass(player)) {

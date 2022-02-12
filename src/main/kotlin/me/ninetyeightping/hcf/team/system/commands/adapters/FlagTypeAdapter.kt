@@ -10,11 +10,6 @@ class FlagTypeAdapter : BladeProvider<Flag> {
 
     override fun provide(context: BladeContext, argument: BladeArgument): Flag? {
         val flag = Flag.valueOf(argument.string)
-
-        if (flag == null) {
-            return null
-        }
-
         return flag
     }
 }

@@ -8,6 +8,7 @@ import com.mongodb.MongoClientURI
 import com.mongodb.client.MongoDatabase
 import io.github.thatkawaiisam.assemble.Assemble
 import io.github.thatkawaiisam.assemble.AssembleStyle
+import javafx.scene.shape.Arc
 import me.ninetyeightping.hcf.board.AssembleBoard
 import me.ninetyeightping.hcf.elevator.listeners.ElevatorCreateListener
 import me.ninetyeightping.hcf.events.koth.commands.KothGenericCommands
@@ -18,7 +19,9 @@ import me.ninetyeightping.hcf.events.sotw.listeners.SOTWDamageListener
 import me.ninetyeightping.hcf.players.commands.EconomyCommands
 import me.ninetyeightping.hcf.players.listeners.HCFPlayerListener
 import me.ninetyeightping.hcf.players.stat.StatisticEntry
+import me.ninetyeightping.hcf.pvpclass.types.Archer
 import me.ninetyeightping.hcf.pvpclass.types.Bard
+import me.ninetyeightping.hcf.pvpclass.types.tasks.ArcherCheckTask
 import me.ninetyeightping.hcf.pvpclass.types.tasks.BardCheckTask
 import me.ninetyeightping.hcf.team.TeamHandler
 import me.ninetyeightping.hcf.team.claims.LandBoard
@@ -110,6 +113,7 @@ class HCF : JavaPlugin() {
         server.pluginManager.registerEvents(SOTWDamageListener(), this)
 
         server.pluginManager.registerEvents(Bard, this)
+        server.pluginManager.registerEvents(Archer, this)
     }
 
     fun registerCommands() {
@@ -129,7 +133,11 @@ class HCF : JavaPlugin() {
     fun startPvPClassTasks() {
         Bard.loadItems()
         (BardCheckTask()).runTaskTimer(this, 0L, 20L)
+
+        Archer.loadItems()
+        (ArcherCheckTask()).runTaskTimer(this, 0L, 20L)
     }
+
 
 
 }

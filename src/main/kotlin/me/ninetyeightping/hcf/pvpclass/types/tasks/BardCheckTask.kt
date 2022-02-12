@@ -1,7 +1,6 @@
 package me.ninetyeightping.hcf.pvpclass.types.tasks
 
 import me.ninetyeightping.hcf.pvpclass.types.Bard
-import me.ninetyeightping.hcf.pvpclass.types.effects.BardEffect
 import me.ninetyeightping.hcf.team.TeamHandler
 import me.ninetyeightping.hcf.util.InjectionUtil
 import org.bukkit.Bukkit
