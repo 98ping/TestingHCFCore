@@ -76,13 +76,14 @@ class ClaimListener : Listener {
         @EventHandler
         fun tryAndTakeDamageInSpawnRegion(event: EntityDamageEvent) {
 
-            if (InjectionUtil.get(LandBoard::class.java)
-                    .teamByClaim(InjectionUtil.get(LandBoard::class.java).claimByLocation(event.entity.location)!!) != null &&
+            val claimByLocation = InjectionUtil.get(LandBoard::class.java).claimByLocation(event.entity.location) ?: return
 
-                InjectionUtil.get(LandBoard::class.java)
-                    .teamByClaim(InjectionUtil.get(LandBoard::class.java).claimByLocation(event.entity.location)!!)!!.masks.contains(Flag.SAFEZONE)) {
+            val teamByClaimLocation = InjectionUtil.get(LandBoard::class.java).teamByClaim(claimByLocation) ?: return
+
+            if (teamByClaimLocation.masks.contains(Flag.SAFEZONE)) {
                 event.isCancelled = true
             }
+
         }
 
         @EventHandler

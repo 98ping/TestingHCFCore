@@ -89,7 +89,7 @@ data class Team(
         //copied this over to team
         val team = this
         sendTo.sendMessage(Chat.format("&7&m-------------------"))
-        sendTo.sendMessage(Chat.format("&9${team.displayName}"))
+        sendTo.sendMessage(Chat.format("&6${team.displayName} &7[" + team.members.stream().filter { Objects.nonNull(Bukkit.getPlayer(UUID.fromString(it))) }.count() + "/" + team.members.size + "&7]"))
         sendTo.sendMessage(
             Chat.format(
                 "&eLeader: &f" + InjectionUtil.get(HCFPlayerHandler::class.java)
@@ -121,6 +121,17 @@ data class Team(
 
     fun verifyTeamClaimLocation(player: Player): Boolean {
         return claims.stream().filter { it.contains(player.location) }.findFirst().orElse(null) != null
+    }
+
+    fun getNamedMembersExcludingLeader(): MutableList<String> {
+        val map = members
+
+        map.remove(leader)
+        val playerlist =
+            map.stream().map { InjectionUtil.get(HCFPlayerHandler::class.java).byUUID(UUID.fromString(it)) }
+                .collect(Collectors.toList()) as ArrayList<HCFPlayer?>
+
+        return playerlist.stream().filter(Objects::nonNull).map { it!!.name }.collect(Collectors.toList())
     }
 
     fun getNamedMembers(): MutableList<String> {
