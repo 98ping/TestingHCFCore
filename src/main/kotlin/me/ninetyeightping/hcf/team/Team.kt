@@ -98,7 +98,7 @@ data class Team(
         )
         sendTo.sendMessage(
             Chat.format(
-                "&eMembers: &f" + team.getNamedMembers().toString().replace("[", "").replace("]", "")
+                "&eMembers: &f" + team.getNamedMembersExcludingLeader().toString().replace("[", "").replace("]", "")
             )
         )
         sendTo.sendMessage(Chat.format("&eClaims: &f" + team.claims.size))

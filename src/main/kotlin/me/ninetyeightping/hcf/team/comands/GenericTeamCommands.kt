@@ -190,21 +190,27 @@ class GenericTeamCommands {
     @Command(value = ["team who", "f who", "t who"])
     fun teamInfo(@Sender sender: Player, @Name("target") player: String) {
 
-        val hcfplayer = InjectionUtil.get(HCFPlayerHandler::class.java).byPlayerName(player)
-        if (hcfplayer == null) {
-            sender.sendMessage(Chat.format("&cNo target with the name $player found"))
+        val factionByName = InjectionUtil.get(TeamHandler::class.java).byName(player)
+
+        if (factionByName != null) {
+            factionByName.sendTeamInfo(sender)
+        }
+
+        val teamByPlayerName = InjectionUtil.get(HCFPlayerHandler::class.java).byPlayerName(player)
+
+        if (teamByPlayerName == null) {
+            sender.sendMessage(Chat.format("&cPlayer does not exist."))
             return
         }
 
-        val teambyPlayer = InjectionUtil.get(TeamHandler::class.java).byUUID(UUID.fromString(hcfplayer.uuid))
+        val team = InjectionUtil.get(TeamHandler::class.java).byUUID(UUID.fromString(teamByPlayerName.uuid))
 
-        if (teambyPlayer == null) {
-            sender.sendMessage(Chat.format("&cNo team has this player in their roster"))
+        if (team == null && factionByName == null) {
+            sender.sendMessage(Chat.format("&cPlayer by this name does not exist or faction by this name does not exist"))
             return
         }
 
-        teambyPlayer.sendTeamInfo(sender)
-
+        team!!.sendTeamInfo(sender)
 
 
 
@@ -228,6 +234,35 @@ class GenericTeamCommands {
         sender.sendMessage(Chat.format("&e/team sethome"))
         sender.sendMessage(Chat.format("&7&m-------------------------------------"))
 
+    }
+
+    @Command(value = ["team promote", "f promote", "t promote"])
+    fun promo(@Sender sender: Player, @Name("target")target: String) {
+        val team = InjectionUtil.get(TeamHandler::class.java).byPlayer(sender)
+        if (team == null) {
+            sender.sendMessage(Chat.format("&cYou are not on a team currently"))
+            return
+        }
+
+        val player = InjectionUtil.get(HCFPlayerHandler::class.java).byPlayerName(target)
+
+        if (player == null) {
+            sender.sendMessage(Chat.format("&cIssue finding player. Report this"))
+            return
+        }
+
+        if (team.subLeaders.contains(player.uuid)) {
+            sender.sendMessage(Chat.format("&cPlayer is already a subleader"))
+            return
+        }
+
+        if (team.leader!!.equals(player.uuid)) {
+            sender.sendMessage(Chat.format("&cPlayer is already a leader of this faction!"))
+        }
+
+        team.subLeaders.add(player.uuid)
+        team.save()
+        sender.sendMessage(Chat.format("&aPromoted $target to a subleader"))
     }
 
     @Command(value = ["team claim", "f claim", "t claim"])
