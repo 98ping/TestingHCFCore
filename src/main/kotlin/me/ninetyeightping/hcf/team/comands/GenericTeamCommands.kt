@@ -1,6 +1,7 @@
 package me.ninetyeightping.hcf.team.comands
 
 import me.ninetyeightping.hcf.HCF
+import me.ninetyeightping.hcf.players.HCFPlayer
 import me.ninetyeightping.hcf.players.HCFPlayerHandler
 import me.ninetyeightping.hcf.team.Team
 import me.ninetyeightping.hcf.team.TeamHandler
@@ -13,6 +14,7 @@ import me.ninetyeightping.hcf.timers.impl.FHomeTimer
 import me.ninetyeightping.hcf.util.Chat
 import me.ninetyeightping.hcf.util.InjectionUtil
 import me.vaperion.blade.annotation.*
+import org.bukkit.Bukkit
 import org.bukkit.World
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
@@ -236,6 +238,30 @@ class GenericTeamCommands {
 
     }
 
+    @Command(value = ["team kick", "f kick", "t kick"])
+    fun kik(@Sender sender: Player, @Name("target")target: String) {
+        val team = InjectionUtil.get(TeamHandler::class.java).byPlayer(sender)
+        if (team == null) {
+            sender.sendMessage(Chat.format("&cYou are not on a team currently"))
+            return
+        }
+
+        val player = InjectionUtil.get(HCFPlayerHandler::class.java).byPlayerName(target)
+
+        if (player == null) {
+            sender.sendMessage(Chat.format("&cIssue finding player. Report this"))
+            return
+        }
+
+        team.members.remove(player.uuid)
+        team.save()
+        team.sendGlobalTeamMessage(Chat.format("&e" + player.name + " was kicked from the team"))
+        if (Bukkit.getPlayer(UUID.fromString(player.uuid)) != null) {
+            Bukkit.getPlayer(UUID.fromString(player.uuid)).sendMessage(Chat.format("&cYou were kicked from the faction!"))
+        }
+    }
+
+
     @Command(value = ["team promote", "f promote", "t promote"])
     fun promo(@Sender sender: Player, @Name("target")target: String) {
         val team = InjectionUtil.get(TeamHandler::class.java).byPlayer(sender)
@@ -265,11 +291,49 @@ class GenericTeamCommands {
         sender.sendMessage(Chat.format("&aPromoted $target to a subleader"))
     }
 
+    @Command(value = ["team kick", "f kick", "t kick"])
+    fun kick(@Sender sender: Player, @Name("target")target: HCFPlayer) {
+        val team = InjectionUtil.get(TeamHandler::class.java).byPlayer(sender)
+        if (team == null) {
+            sender.sendMessage(Chat.format("&cYou are not on a team currently"))
+            return
+        }
+
+        if (!team.subLeaders.contains(sender.uniqueId.toString())) {
+            sender.sendMessage(Chat.format("&cYou must be a subleader to kick someone"))
+            return
+        }
+
+        if (team.leader.equals(target.uuid)) {
+            sender.sendMessage(Chat.format("&cYou cannot kick a leader"))
+            return
+        }
+
+        team.members.remove(target.uuid)
+        if (team.subLeaders.contains(target.uuid)) {
+            team.subLeaders.remove(target.uuid)
+        }
+
+
+        team.sendGlobalTeamMessage("&e" + target.name + " has been kicked from the faction")
+
+        if (Bukkit.getPlayer(UUID.fromString(target.uuid)) != null) {
+
+            Bukkit.getPlayer(UUID.fromString(target.uuid)).sendMessage(Chat.format("&cYou have been kicked from your faction"))
+        }
+
+    }
+
     @Command(value = ["team claim", "f claim", "t claim"])
     fun claim(@Sender sender: Player) {
         val team = InjectionUtil.get(TeamHandler::class.java).byPlayer(sender)
         if (team == null) {
             sender.sendMessage(Chat.format("&cYou are not on a team currently"))
+            return
+        }
+
+        if (!team.subLeaders.contains(sender.uniqueId.toString())) {
+            sender.sendMessage(Chat.format("&cYou must be a subleader to start the claiming process"))
             return
         }
 

@@ -16,6 +16,7 @@ import me.ninetyeightping.hcf.events.koth.types.KothHandler
 import me.ninetyeightping.hcf.events.sotw.SOTWHandler
 import me.ninetyeightping.hcf.events.sotw.commands.SOTWCommands
 import me.ninetyeightping.hcf.events.sotw.listeners.SOTWDamageListener
+import me.ninetyeightping.hcf.players.HCFPlayer
 import me.ninetyeightping.hcf.players.commands.EconomyCommands
 import me.ninetyeightping.hcf.players.listeners.HCFPlayerListener
 import me.ninetyeightping.hcf.players.stat.StatisticEntry
@@ -28,6 +29,7 @@ import me.ninetyeightping.hcf.team.claims.LandBoard
 import me.ninetyeightping.hcf.team.claims.listener.ClaimListener
 import me.ninetyeightping.hcf.team.claims.listener.LandBoardListener
 import me.ninetyeightping.hcf.team.comands.GenericTeamCommands
+import me.ninetyeightping.hcf.team.comands.adapter.HCFPlayerAdapter
 import me.ninetyeightping.hcf.team.dtr.DTRUpdateTask
 import me.ninetyeightping.hcf.team.system.claims.listeners.SystemTeamClaimListener
 import me.ninetyeightping.hcf.team.system.commands.SystemTeamCommands
@@ -121,6 +123,7 @@ class HCF : JavaPlugin() {
         Blade.of().fallbackPrefix("HCF")
             .containerCreator(BukkitCommandContainer.CREATOR)
             .bind(Flag::class.java, FlagTypeAdapter())
+            .bind(HCFPlayer::class.java, HCFPlayerAdapter())
             .binding(BukkitBindings()).build()
             .register(GenericTeamCommands())
             .register(EconomyCommands())
