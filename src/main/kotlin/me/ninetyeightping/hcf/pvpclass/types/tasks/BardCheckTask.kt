@@ -1,8 +1,7 @@
 package me.ninetyeightping.hcf.pvpclass.types.tasks
 
+import me.ninetyeightping.hcf.HCF
 import me.ninetyeightping.hcf.pvpclass.types.Bard
-import me.ninetyeightping.hcf.team.TeamHandler
-import me.ninetyeightping.hcf.util.InjectionUtil
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
@@ -30,8 +29,8 @@ class BardCheckTask : BukkitRunnable() {
                 player.addPotionEffect(effect!!.potionEffect)
 
                 player.getNearbyEntities(10.0, 10.0, 10.0).stream().filter { it is Player }.forEach {
-                    val team = InjectionUtil.get(TeamHandler::class.java).byPlayer(player)
-                    val teamOther = InjectionUtil.get(TeamHandler::class.java).byPlayer(it as Player)
+                    val team = HCF.instance.teamHandler.byPlayer(player)
+                    val teamOther = HCF.instance.teamHandler.byPlayer(it as Player)
 
                     if (team == teamOther) {
                         it.addPotionEffect(effect.potionEffect)

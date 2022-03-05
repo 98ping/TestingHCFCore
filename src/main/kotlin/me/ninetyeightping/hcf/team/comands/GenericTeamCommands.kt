@@ -4,7 +4,6 @@ import me.ninetyeightping.hcf.HCF
 import me.ninetyeightping.hcf.players.HCFPlayer
 import me.ninetyeightping.hcf.players.HCFPlayerHandler
 import me.ninetyeightping.hcf.team.Team
-import me.ninetyeightping.hcf.team.TeamHandler
 import me.ninetyeightping.hcf.team.claims.LandBoard
 import me.ninetyeightping.hcf.team.claims.listener.ClaimListener
 import me.ninetyeightping.hcf.team.claims.player.ClaimSession
@@ -12,7 +11,6 @@ import me.ninetyeightping.hcf.team.types.FactionType
 import me.ninetyeightping.hcf.timers.impl.CombatTimer
 import me.ninetyeightping.hcf.timers.impl.FHomeTimer
 import me.ninetyeightping.hcf.util.Chat
-import me.ninetyeightping.hcf.util.InjectionUtil
 import me.vaperion.blade.annotation.*
 import org.bukkit.Bukkit
 import org.bukkit.World
@@ -28,12 +26,12 @@ class GenericTeamCommands {
     @Command(value = ["team forcedtrregen"])
     @Permission(value = "hcf.admin", message = "No Permission.")
     fun forcesetdtrregen(@Sender player: Player, @Name("team")name: String) {
-        if (!InjectionUtil.get(TeamHandler::class.java).exists(name)) {
+        if (!HCF.instance.teamHandler.exists(name)) {
             player.sendMessage(Chat.format("&cTeam not found."))
             return
         }
 
-        val team = InjectionUtil.get(TeamHandler::class.java).byName(name)
+        val team = HCF.instance.teamHandler.byName(name)
         team!!.dtrregen = (System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1))
         team.save()
         player.sendMessage(Chat.format("&aPut $name on DTR regen"))
@@ -42,7 +40,7 @@ class GenericTeamCommands {
 
     @Command(value = ["f sethome", "team sethome", "t sethome"])
     fun sethome(@Sender player: Player) {
-        val team = InjectionUtil.get(TeamHandler::class.java).byPlayer(player)
+        val team = HCF.instance.teamHandler.byPlayer(player)
         if (team == null) {
             player.sendMessage(Chat.format("&cNo team found!"))
             return
@@ -70,7 +68,7 @@ class GenericTeamCommands {
 
     @Command(value = ["f home", "team home", "t home"])
     fun home(@Sender player: Player) {
-        val team = InjectionUtil.get(TeamHandler::class.java).byPlayer(player)
+        val team = HCF.instance.teamHandler.byPlayer(player)
         if (team == null) {
             player.sendMessage(Chat.format("&cNo team found!"))
             return
@@ -137,13 +135,13 @@ class GenericTeamCommands {
 
     @Command(value = ["team accept", "f accept", "t accept"])
     fun accept(@Sender sender: Player, @Name("team")teamString: String) {
-        val team = InjectionUtil.get(TeamHandler::class.java).byPlayer(sender)
+        val team = HCF.instance.teamHandler.byPlayer(sender)
         if (team != null) {
             sender.sendMessage(Chat.format("&cYou are currently on a team"))
             return
         }
 
-        val tryingToAcceptTeam = InjectionUtil.get(TeamHandler::class.java).byName(teamString)
+        val tryingToAcceptTeam = HCF.instance.teamHandler.byName(teamString)
         if (tryingToAcceptTeam == null) {
             sender.sendMessage(Chat.format("&cThis team you are trying to accept is null"))
             return
@@ -164,13 +162,13 @@ class GenericTeamCommands {
 
     @Command(value = ["team invite", "f invite", "t invite"])
     fun invite(@Sender sender: Player, @Name("target")target: String) {
-        val team = InjectionUtil.get(TeamHandler::class.java).byPlayer(sender)
+        val team = HCF.instance.teamHandler.byPlayer(sender)
         if (team == null) {
             sender.sendMessage(Chat.format("&cYou are not on a team currently"))
             return
         }
 
-        val hcfplayer = InjectionUtil.get(HCFPlayerHandler::class.java).byPlayerName(target)
+        val hcfplayer = HCF.instance.playerHandler.byPlayerName(target)
 
         if (hcfplayer == null) {
             sender.sendMessage(Chat.format("&cPlayer has never logged in under this alias"))
@@ -192,27 +190,14 @@ class GenericTeamCommands {
     @Command(value = ["team who", "f who", "t who"])
     fun teamInfo(@Sender sender: Player, @Name("target") player: String) {
 
-        val factionByName = InjectionUtil.get(TeamHandler::class.java).byName(player)
+        val factionByName = HCF.instance.teamHandler.byName(player)
 
-        if (factionByName != null) {
-            factionByName.sendTeamInfo(sender)
-        }
-
-        val teamByPlayerName = InjectionUtil.get(HCFPlayerHandler::class.java).byPlayerName(player)
-
-        if (teamByPlayerName == null) {
-            sender.sendMessage(Chat.format("&cPlayer does not exist."))
+        if (factionByName == null) {
+            sender.sendMessage(Chat.format("&cFaction does not exist!"))
             return
         }
 
-        val team = InjectionUtil.get(TeamHandler::class.java).byUUID(UUID.fromString(teamByPlayerName.uuid))
-
-        if (team == null && factionByName == null) {
-            sender.sendMessage(Chat.format("&cPlayer by this name does not exist or faction by this name does not exist"))
-            return
-        }
-
-        team!!.sendTeamInfo(sender)
+        factionByName.sendTeamInfo(sender)
 
 
 
@@ -240,13 +225,13 @@ class GenericTeamCommands {
 
     @Command(value = ["team kick", "f kick", "t kick"])
     fun kik(@Sender sender: Player, @Name("target")target: String) {
-        val team = InjectionUtil.get(TeamHandler::class.java).byPlayer(sender)
+        val team = HCF.instance.teamHandler.byPlayer(sender)
         if (team == null) {
             sender.sendMessage(Chat.format("&cYou are not on a team currently"))
             return
         }
 
-        val player = InjectionUtil.get(HCFPlayerHandler::class.java).byPlayerName(target)
+        val player = HCF.instance.playerHandler.byPlayerName(target)
 
         if (player == null) {
             sender.sendMessage(Chat.format("&cIssue finding player. Report this"))
@@ -264,13 +249,13 @@ class GenericTeamCommands {
 
     @Command(value = ["team promote", "f promote", "t promote"])
     fun promo(@Sender sender: Player, @Name("target")target: String) {
-        val team = InjectionUtil.get(TeamHandler::class.java).byPlayer(sender)
+        val team = HCF.instance.teamHandler.byPlayer(sender)
         if (team == null) {
             sender.sendMessage(Chat.format("&cYou are not on a team currently"))
             return
         }
 
-        val player = InjectionUtil.get(HCFPlayerHandler::class.java).byPlayerName(target)
+        val player = HCF.instance.playerHandler.byPlayerName(target)
 
         if (player == null) {
             sender.sendMessage(Chat.format("&cIssue finding player. Report this"))
@@ -293,7 +278,7 @@ class GenericTeamCommands {
 
     @Command(value = ["team kick", "f kick", "t kick"])
     fun kick(@Sender sender: Player, @Name("target")target: HCFPlayer) {
-        val team = InjectionUtil.get(TeamHandler::class.java).byPlayer(sender)
+        val team = HCF.instance.teamHandler.byPlayer(sender)
         if (team == null) {
             sender.sendMessage(Chat.format("&cYou are not on a team currently"))
             return
@@ -326,13 +311,13 @@ class GenericTeamCommands {
 
     @Command(value = ["team claim", "f claim", "t claim"])
     fun claim(@Sender sender: Player) {
-        val team = InjectionUtil.get(TeamHandler::class.java).byPlayer(sender)
+        val team = HCF.instance.teamHandler.byPlayer(sender)
         if (team == null) {
             sender.sendMessage(Chat.format("&cYou are not on a team currently"))
             return
         }
 
-        if (!team.subLeaders.contains(sender.uniqueId.toString())) {
+        if (!team.subLeaders.contains(sender.uniqueId.toString()) && !team.leader.equals(sender.uniqueId.toString())) {
             sender.sendMessage(Chat.format("&cYou must be a subleader to start the claiming process"))
             return
         }
@@ -348,12 +333,12 @@ class GenericTeamCommands {
     @Command(value = ["team create", "f create", "t create"])
     fun createTeam(@Sender player: Player, @Name("name") name: String) {
 
-        if (InjectionUtil.get(TeamHandler::class.java).exists(name)) {
+        if (HCF.instance.teamHandler.exists(name)) {
             player.sendMessage(Chat.format("&cTeam already exists."))
             return
         }
 
-        if (InjectionUtil.get(TeamHandler::class.java).byPlayer(player) != null) {
+        if (HCF.instance.teamHandler.byPlayer(player) != null) {
             player.sendMessage(Chat.format("&cYou are already on a team!"))
             return
         }
@@ -382,7 +367,7 @@ class GenericTeamCommands {
 
         team.dtr = team.calculateMaximumDTR()
 
-        InjectionUtil.get(TeamHandler::class.java).createTeam(team)
+        HCF.instance.teamHandler.createTeam(team)
         player.sendMessage(Chat.format("&eCreated a team with the name of $name"))
 
     }
@@ -390,7 +375,7 @@ class GenericTeamCommands {
     @Command(value = ["team disband", "f disband", "t disband"])
     fun disbandTeam(@Sender player: Player) {
 
-        val teamForPlayer = InjectionUtil.get(TeamHandler::class.java).byPlayer(player)
+        val teamForPlayer = HCF.instance.teamHandler.byPlayer(player)
 
         if (teamForPlayer == null) {
             player.sendMessage(Chat.format("&cYou are not on a team"))
@@ -403,8 +388,8 @@ class GenericTeamCommands {
         }
 
         teamForPlayer.sendGlobalTeamMessage("&eThe team has been disbanded")
-        teamForPlayer.claims.forEach { InjectionUtil.get(LandBoard::class.java).claims.remove(it) }
-        InjectionUtil.get(TeamHandler::class.java).disbandTeam(teamForPlayer)
+        teamForPlayer.claims.forEach { HCF.instance.landBoard.claims.remove(it) }
+        HCF.instance.teamHandler.disbandTeam(teamForPlayer)
     }
 
 }

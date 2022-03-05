@@ -1,7 +1,6 @@
 package me.ninetyeightping.hcf.board
 
 import io.github.thatkawaiisam.assemble.AssembleAdapter
-import javafx.scene.shape.Arc
 import me.ninetyeightping.hcf.HCF
 import me.ninetyeightping.hcf.players.HCFPlayerHandler
 import me.ninetyeightping.hcf.pvpclass.types.Archer
@@ -11,7 +10,6 @@ import me.ninetyeightping.hcf.timers.impl.EffectCooldownTimer
 import me.ninetyeightping.hcf.timers.impl.EnderpearlTimer
 import me.ninetyeightping.hcf.timers.impl.FHomeTimer
 import me.ninetyeightping.hcf.util.Chat
-import me.ninetyeightping.hcf.util.InjectionUtil
 import me.ninetyeightping.hcf.util.TimeUtils
 import org.bukkit.entity.Player
 
@@ -25,7 +23,7 @@ class AssembleBoard : AssembleAdapter {
         val lines = arrayListOf<String>()
         lines.add("&7&m--------------------")
 
-        val hcfplayer = InjectionUtil.get(HCFPlayerHandler::class.java).byPlayer(player!!)
+        val hcfplayer = HCF.instance.playerHandler.byPlayer(player!!)
         if (hcfplayer != null) {
             val entry = hcfplayer.stats
             if (HCF.instance.config.getBoolean("kits")) {

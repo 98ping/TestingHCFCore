@@ -5,7 +5,6 @@ import com.mongodb.client.model.Filters
 import com.mongodb.client.model.UpdateOptions
 import me.ninetyeightping.hcf.HCF
 import me.ninetyeightping.hcf.team.claims.LandBoard
-import me.ninetyeightping.hcf.util.InjectionUtil
 import org.bson.Document
 import org.bukkit.entity.Player
 import org.springframework.stereotype.Service
@@ -52,7 +51,7 @@ class TeamHandler {
         mongoCollection.deleteOne(Filters.eq("_id", team.id))
 
         team.claims.forEach {
-            InjectionUtil.get(LandBoard::class.java).claims.remove(it)
+            HCF.instance.landBoard.claims.remove(it)
         }
 
         println("Removed team claims for " + team.displayName)

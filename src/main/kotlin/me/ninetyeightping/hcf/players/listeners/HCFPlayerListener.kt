@@ -4,10 +4,8 @@ import me.ninetyeightping.hcf.HCF
 import me.ninetyeightping.hcf.players.HCFPlayer
 import me.ninetyeightping.hcf.players.HCFPlayerHandler
 import me.ninetyeightping.hcf.players.stat.StatisticEntry
-import me.ninetyeightping.hcf.team.TeamHandler
 import me.ninetyeightping.hcf.timers.impl.EnderpearlTimer
 import me.ninetyeightping.hcf.util.Chat
-import me.ninetyeightping.hcf.util.InjectionUtil
 import org.bukkit.Material
 import org.bukkit.entity.EnderPearl
 import org.bukkit.entity.Player
@@ -37,7 +35,7 @@ class HCFPlayerListener : Listener {
     fun die(event: PlayerDeathEvent) {
         val player = event.entity
 
-        val hcfplayerForEntity = InjectionUtil.get(HCFPlayerHandler::class.java).byPlayer(player) ?: return
+        val hcfplayerForEntity = HCF.instance.playerHandler.byPlayer(player) ?: return
 
         hcfplayerForEntity.stats.deaths = (hcfplayerForEntity.stats.deaths + 1)
         if (hcfplayerForEntity.stats.killstreak > 0) {
@@ -45,14 +43,14 @@ class HCFPlayerListener : Listener {
         }
         hcfplayerForEntity.push()
 
-        val teamToReduceDTR = InjectionUtil.get(TeamHandler::class.java).byPlayer(player) ?: return
+        val teamToReduceDTR = HCF.instance.teamHandler.byPlayer(player) ?: return
 
         teamToReduceDTR.registerPlayerDeath(player)
 
         val killer = event.entity.killer
         if (killer != null) {
 
-            val hcfplayerForKiller = InjectionUtil.get(HCFPlayerHandler::class.java).byPlayer(killer)
+            val hcfplayerForKiller = HCF.instance.playerHandler.byPlayer(killer)
             if (hcfplayerForKiller == null) {
                 println("HCFPlayer for killer is null.")
                 return
@@ -79,9 +77,9 @@ class HCFPlayerListener : Listener {
     fun join(event: PlayerJoinEvent) {
         val player = event.player;
 
-        if (InjectionUtil.get(HCFPlayerHandler::class.java).byPlayer(player) == null) {
+        if (HCF.instance.playerHandler.byPlayer(player) == null) {
             val hcfPlayer = HCFPlayer(player.uniqueId.toString(), player.name, 0.0, StatisticEntry(0, 0, 0, 0))
-            InjectionUtil.get(HCFPlayerHandler::class.java).createPlayer(hcfPlayer)
+            HCF.instance.playerHandler.createPlayer(hcfPlayer)
         }
     }
 }

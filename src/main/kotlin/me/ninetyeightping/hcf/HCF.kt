@@ -17,6 +17,7 @@ import me.ninetyeightping.hcf.events.sotw.SOTWHandler
 import me.ninetyeightping.hcf.events.sotw.commands.SOTWCommands
 import me.ninetyeightping.hcf.events.sotw.listeners.SOTWDamageListener
 import me.ninetyeightping.hcf.players.HCFPlayer
+import me.ninetyeightping.hcf.players.HCFPlayerHandler
 import me.ninetyeightping.hcf.players.commands.EconomyCommands
 import me.ninetyeightping.hcf.players.listeners.HCFPlayerListener
 import me.ninetyeightping.hcf.players.stat.StatisticEntry
@@ -71,7 +72,7 @@ class HCF : JavaPlugin() {
     lateinit var sotwHandler: SOTWHandler
     lateinit var kothHandler: KothHandler
     lateinit var landBoard: LandBoard
-
+    lateinit var playerHandler: HCFPlayerHandler
     //need this for initialization of landboard. Beans dont work when it depends on itself
     lateinit var teamHandler: TeamHandler
 
@@ -87,6 +88,7 @@ class HCF : JavaPlugin() {
         kothHandler = KothHandler()
         teamHandler = TeamHandler()
         landBoard = LandBoard()
+        playerHandler = HCFPlayerHandler()
 
         val assemble = Assemble(this, AssembleBoard())
         assemble.ticks = 2
@@ -118,7 +120,7 @@ class HCF : JavaPlugin() {
         server.pluginManager.registerEvents(Archer, this)
     }
 
-    fun registerCommands() {
+    private fun registerCommands() {
         //commands
         Blade.of().fallbackPrefix("HCF")
             .containerCreator(BukkitCommandContainer.CREATOR)

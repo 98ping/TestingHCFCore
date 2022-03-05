@@ -1,12 +1,10 @@
 package me.ninetyeightping.hcf.team.claims.listener
 
 import me.ninetyeightping.hcf.HCF
-import me.ninetyeightping.hcf.team.TeamHandler
 import me.ninetyeightping.hcf.team.claims.LandBoard
 import me.ninetyeightping.hcf.team.system.flags.Flag
 import me.ninetyeightping.hcf.util.Chat
 import me.ninetyeightping.hcf.util.Cuboid
-import me.ninetyeightping.hcf.util.InjectionUtil
 import me.ninetyeightping.hcf.util.ItemBuilder
 import org.bukkit.GameMode
 import org.bukkit.Material
@@ -32,10 +30,10 @@ class ClaimListener : Listener {
     fun tryAndPlaceInClaim(event: BlockPlaceEvent) {
         val location = event.block.location
 
-        if (InjectionUtil.get(LandBoard::class.java).claimByLocation(location) != null) {
+        if (HCF.instance.landBoard.claimByLocation(location) != null) {
             if (event.player.gameMode != GameMode.CREATIVE) {
-                val claim = InjectionUtil.get(LandBoard::class.java).claimByLocation(location)
-                val team = InjectionUtil.get(LandBoard::class.java).teamByClaim(claim!!)
+                val claim = HCF.instance.landBoard.claimByLocation(location)
+                val team = HCF.instance.landBoard.teamByClaim(claim!!)
 
                 if (!team!!.isMember(event.player) && !team.isRaidable()) {
                     event.isCancelled = true
@@ -51,8 +49,8 @@ class ClaimListener : Listener {
             val damager = event.damager as Player
             val entity = event.entity as Player
 
-            val claim = InjectionUtil.get(LandBoard::class.java).getTeamClaimFromPlayer(entity.location)
-            val damagerClaim = InjectionUtil.get(LandBoard::class.java).getTeamClaimFromPlayer(damager.location)
+            val claim = HCF.instance.landBoard.getTeamClaimFromPlayer(entity.location)
+            val damagerClaim = HCF.instance.landBoard.getTeamClaimFromPlayer(damager.location)
 
             if (claim != null && damagerClaim != null) {
 
@@ -65,8 +63,8 @@ class ClaimListener : Listener {
                 }
             }
 
-            val team = InjectionUtil.get(TeamHandler::class.java).byPlayer(entity)
-            val damagerTeam = InjectionUtil.get(TeamHandler::class.java).byPlayer(damager)
+            val team = HCF.instance.teamHandler.byPlayer(entity)
+            val damagerTeam = HCF.instance.teamHandler.byPlayer(damager)
             if (team == damagerTeam) {
                 damager.sendMessage(Chat.format("&eYou cannot damage your teammates"))
                 event.isCancelled = true
@@ -76,9 +74,9 @@ class ClaimListener : Listener {
         @EventHandler
         fun tryAndTakeDamageInSpawnRegion(event: EntityDamageEvent) {
 
-            val claimByLocation = InjectionUtil.get(LandBoard::class.java).claimByLocation(event.entity.location) ?: return
+            val claimByLocation = HCF.instance.landBoard.claimByLocation(event.entity.location) ?: return
 
-            val teamByClaimLocation = InjectionUtil.get(LandBoard::class.java).teamByClaim(claimByLocation) ?: return
+            val teamByClaimLocation = HCF.instance.landBoard.teamByClaim(claimByLocation) ?: return
 
             if (teamByClaimLocation.masks.contains(Flag.SAFEZONE)) {
                 event.isCancelled = true
@@ -90,10 +88,10 @@ class ClaimListener : Listener {
         fun tryAndBreakInClaim(event: BlockBreakEvent) {
             val location = event.block.location
 
-            if (InjectionUtil.get(LandBoard::class.java).claimByLocation(location) != null) {
+            if (HCF.instance.landBoard.claimByLocation(location) != null) {
                 if (event.player.gameMode != GameMode.CREATIVE) {
-                    val claim = InjectionUtil.get(LandBoard::class.java).claimByLocation(location)
-                    val team = InjectionUtil.get(LandBoard::class.java).teamByClaim(claim!!)
+                    val claim = HCF.instance.landBoard.claimByLocation(location)
+                    val team = HCF.instance.landBoard.teamByClaim(claim!!)
 
                     if (!team!!.isMember(event.player) && !team.isRaidable()) {
                         event.isCancelled = true
@@ -109,7 +107,7 @@ class ClaimListener : Listener {
             val player = event.player;
 
             if (player.itemInHand.isSimilar(claimWand)) {
-                val team = InjectionUtil.get(TeamHandler::class.java).byPlayer(player)
+                val team = HCF.instance.teamHandler.byPlayer(player)
                 if (team == null) return
                 if (event.action == Action.LEFT_CLICK_BLOCK) {
 
@@ -156,9 +154,7 @@ class ClaimListener : Listener {
                             return
                         }
 
-                        if (!InjectionUtil.get(LandBoard::class.java).verifyCanClaim(loc1) || !InjectionUtil.get(
-                                LandBoard::class.java
-                            ).verifyCanClaim(loc2)
+                        if (!HCF.instance.landBoard.verifyCanClaim(loc1) || !HCF.instance.landBoard.verifyCanClaim(loc2)
                         ) {
                             player.sendMessage(Chat.format("&cOne or more of the locations in your claim are unable to be claimed!"))
                             return

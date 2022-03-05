@@ -2,11 +2,9 @@ package me.ninetyeightping.hcf.team.claims
 
 import me.ninetyeightping.hcf.HCF
 import me.ninetyeightping.hcf.team.Team
-import me.ninetyeightping.hcf.team.TeamHandler
 import me.ninetyeightping.hcf.team.claims.player.ClaimSession
 import me.ninetyeightping.hcf.team.system.claims.SystemTeamClaimSession
 import me.ninetyeightping.hcf.util.Cuboid
-import me.ninetyeightping.hcf.util.InjectionUtil
 import org.bukkit.Location
 import org.bukkit.World
 import org.bukkit.entity.Player
@@ -49,7 +47,7 @@ class LandBoard {
     }
 
     fun refreshTeams() {
-        for (team in InjectionUtil.get(TeamHandler::class.java).teams) {
+        for (team in HCF.instance.teamHandler.teams) {
             team.claims.forEach {
                 claims[it] = team
             }

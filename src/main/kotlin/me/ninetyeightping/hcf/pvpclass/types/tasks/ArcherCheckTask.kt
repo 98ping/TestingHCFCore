@@ -1,10 +1,7 @@
 package me.ninetyeightping.hcf.pvpclass.types.tasks
 
 import me.ninetyeightping.hcf.pvpclass.types.Archer
-import me.ninetyeightping.hcf.team.TeamHandler
-import me.ninetyeightping.hcf.util.InjectionUtil
 import org.bukkit.Bukkit
-import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
 
 class ArcherCheckTask : BukkitRunnable() {

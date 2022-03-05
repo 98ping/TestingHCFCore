@@ -7,7 +7,6 @@ import me.ninetyeightping.hcf.team.system.flags.Flag
 import me.ninetyeightping.hcf.team.types.FactionType
 import me.ninetyeightping.hcf.util.Chat
 import me.ninetyeightping.hcf.util.Cuboid
-import me.ninetyeightping.hcf.util.InjectionUtil
 import me.ninetyeightping.hcf.util.TimeUtils
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -92,7 +91,7 @@ data class Team(
         sendTo.sendMessage(Chat.format("&6${team.displayName} &7[" + team.members.stream().filter { Objects.nonNull(Bukkit.getPlayer(UUID.fromString(it))) }.count() + "/" + team.members.size + "&7]"))
         sendTo.sendMessage(
             Chat.format(
-                "&eLeader: &f" + InjectionUtil.get(HCFPlayerHandler::class.java)
+                "&eLeader: &f" + HCF.instance.playerHandler
                     .byUUID(UUID.fromString(team.leader))!!.name
             )
         )
@@ -128,7 +127,7 @@ data class Team(
 
         map.remove(leader)
         val playerlist =
-            map.stream().map { InjectionUtil.get(HCFPlayerHandler::class.java).byUUID(UUID.fromString(it)) }
+            map.stream().map { HCF.instance.playerHandler.byUUID(UUID.fromString(it)) }
                 .collect(Collectors.toList()) as ArrayList<HCFPlayer?>
 
         return playerlist.stream().filter(Objects::nonNull).map { it!!.name }.collect(Collectors.toList())
@@ -136,7 +135,7 @@ data class Team(
 
     fun getNamedMembers(): MutableList<String> {
         val playerlist =
-            members.stream().map { InjectionUtil.get(HCFPlayerHandler::class.java).byUUID(UUID.fromString(it)) }
+            members.stream().map { HCF.instance.playerHandler.byUUID(UUID.fromString(it)) }
                 .collect(Collectors.toList()) as ArrayList<HCFPlayer?>
         return playerlist.stream().filter(Objects::nonNull).map { it!!.name }.collect(Collectors.toList())
     }
@@ -151,7 +150,7 @@ data class Team(
 
 
     fun save() {
-        InjectionUtil.get(TeamHandler::class.java).save(this)
+        HCF.instance.teamHandler.save(this)
     }
 
 }
