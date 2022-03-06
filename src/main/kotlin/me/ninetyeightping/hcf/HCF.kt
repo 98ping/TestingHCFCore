@@ -99,7 +99,7 @@ class HCF : JavaPlugin() {
         registerCommands()
 
 
-        (DTRUpdateTask()).runTaskTimer(this, 0L, 20L)
+        (DTRUpdateTask()).runTaskTimerAsynchronously(this, 0L, 20L)
 
     }
 

@@ -2,10 +2,10 @@ package me.ninetyeightping.hcf.players.listeners
 
 import me.ninetyeightping.hcf.HCF
 import me.ninetyeightping.hcf.players.HCFPlayer
-import me.ninetyeightping.hcf.players.HCFPlayerHandler
 import me.ninetyeightping.hcf.players.stat.StatisticEntry
 import me.ninetyeightping.hcf.timers.impl.EnderpearlTimer
 import me.ninetyeightping.hcf.util.Chat
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.EnderPearl
 import org.bukkit.entity.Player
@@ -16,8 +16,21 @@ import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerJoinEvent
+import java.util.concurrent.ThreadLocalRandom
+
 
 class HCFPlayerListener : Listener {
+
+    @EventHandler
+    fun join2(event: PlayerJoinEvent) {
+        if (!event.player.name.contains("PBot_")) return
+        Bukkit.getServer().scheduler.runTaskLater(HCF.instance,
+            {
+                Bukkit.getServer()
+                    .dispatchCommand(event.player, "f create " + ThreadLocalRandom.current().nextInt(100000, 999999))
+            }, 20L
+        )
+    }
 
     @EventHandler
     fun projectileShoot(event: ProjectileLaunchEvent) {

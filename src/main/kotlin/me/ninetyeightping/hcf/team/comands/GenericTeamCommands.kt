@@ -203,26 +203,6 @@ class GenericTeamCommands {
 
     }
 
-    @Command(value = ["team", "f", "t"])
-    fun info(@Sender sender: Player) {
-        sender.sendMessage(Chat.format("&eFaction Information"))
-        sender.sendMessage(Chat.format("&7&m-------------------------------------"))
-        sender.sendMessage(Chat.format("&6Normal Commands"))
-        sender.sendMessage(Chat.format("&e/team create"))
-        sender.sendMessage(Chat.format("&e/team disband"))
-        sender.sendMessage(Chat.format("&e/team who"))
-        sender.sendMessage(Chat.format("&e/team accept"))
-        sender.sendMessage(Chat.format("&e/team home"))
-        sender.sendMessage(" ")
-        sender.sendMessage(Chat.format("&6Subleader Commands"))
-        sender.sendMessage(Chat.format("&e/team claim"))
-        sender.sendMessage(Chat.format("&e/team invite"))
-        sender.sendMessage(Chat.format("&e/team kick"))
-        sender.sendMessage(Chat.format("&e/team sethome"))
-        sender.sendMessage(Chat.format("&7&m-------------------------------------"))
-
-    }
-
     @Command(value = ["team kick", "f kick", "t kick"])
     fun kik(@Sender sender: Player, @Name("target")target: String) {
         val team = HCF.instance.teamHandler.byPlayer(sender)

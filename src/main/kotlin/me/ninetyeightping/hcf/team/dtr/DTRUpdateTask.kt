@@ -6,6 +6,7 @@ import org.bukkit.scheduler.BukkitRunnable
 class DTRUpdateTask : BukkitRunnable() {
 
     override fun run() {
+        HCF.instance.teamHandler.pull()
         for (team in HCF.instance.teamHandler.teams) {
 
             val diff = team.dtrregen - System.currentTimeMillis()
