@@ -20,17 +20,7 @@ import java.util.concurrent.ThreadLocalRandom
 
 
 class HCFPlayerListener : Listener {
-
-    @EventHandler
-    fun join2(event: PlayerJoinEvent) {
-        if (!event.player.name.contains("PBot_")) return
-        Bukkit.getServer().scheduler.runTaskLater(HCF.instance,
-            {
-                Bukkit.getServer()
-                    .dispatchCommand(event.player, "f create " + ThreadLocalRandom.current().nextInt(100000, 999999))
-            }, 20L
-        )
-    }
+    
 
     @EventHandler
     fun projectileShoot(event: ProjectileLaunchEvent) {
