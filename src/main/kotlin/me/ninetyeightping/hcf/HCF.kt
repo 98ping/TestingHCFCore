@@ -67,7 +67,7 @@ class HCF : JavaPlugin() {
         .registerTypeAdapter(Cuboid::class.java, CuboidSerializer)
         .registerTypeAdapter(Location::class.java, LocationSerializer)
         .registerTypeAdapter(StatisticEntry::class.java, StatisticSerializer)
-        .create();
+        .create()
 
     lateinit var sotwHandler: SOTWHandler
     lateinit var kothHandler: KothHandler

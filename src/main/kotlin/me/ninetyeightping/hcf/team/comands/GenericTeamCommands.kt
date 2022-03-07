@@ -187,17 +187,32 @@ class GenericTeamCommands {
     }
 
 
-    @Command(value = ["team who", "f who", "t who"])
+    @Command(value = ["team who", "f who", "t who", "f i"])
     fun teamInfo(@Sender sender: Player, @Name("target") player: String) {
 
         val factionByName = HCF.instance.teamHandler.byName(player)
 
-        if (factionByName == null) {
-            sender.sendMessage(Chat.format("&cFaction does not exist!"))
+        if (factionByName != null) {
+            factionByName.sendTeamInfo(sender)
+        }
+
+        val hcf = HCF.instance.playerHandler.byPlayerName(player)
+
+
+        val factionByPlayer = HCF.instance.teamHandler.byUUID(UUID.fromString(hcf!!.uuid))
+
+
+        if (factionByPlayer != null) {
+            factionByPlayer.sendTeamInfo(sender)
+        }
+
+        if (factionByName == null && factionByPlayer == null) {
+            sender.sendMessage(Chat.format("&cFaction not found"))
             return
         }
 
-        factionByName.sendTeamInfo(sender)
+
+
 
 
 
@@ -342,12 +357,9 @@ class GenericTeamCommands {
             ArrayList()
         )
 
-        //add creator to the list
-        team.members.add(player.uniqueId.toString())
-
-        team.dtr = team.calculateMaximumDTR()
 
         HCF.instance.teamHandler.createTeam(team)
+        HCF.instance.teamHandler.addDTRAndMemberToTeam(player)
         player.sendMessage(Chat.format("&eCreated a team with the name of $name"))
 
     }

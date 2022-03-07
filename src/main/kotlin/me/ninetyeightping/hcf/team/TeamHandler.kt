@@ -24,27 +24,25 @@ class TeamHandler {
         teams = mongoCollection.find().into(ArrayList()).map { deserialize(it) }.toCollection(ArrayList())
     }
 
-    fun byPlayer(player: Player) : Team? {
+    fun byPlayer(player: Player): Team? {
         return teams.stream().filter { it.members.contains(player.uniqueId.toString()) }.findFirst().orElse(null)
     }
 
-    fun byUUID(uuid: UUID) : Team? {
+    fun byUUID(uuid: UUID): Team? {
         return teams.stream().filter { it.members.contains(uuid.toString()) }.findFirst().orElse(null)
     }
 
 
-    fun byName(name: String) : Team? {
+    fun byName(name: String): Team? {
         return teams.stream().filter { it.displayName.equals(name, ignoreCase = true) }.findFirst().orElse(null)
     }
 
-    fun exists(name: String) : Boolean {
+    fun exists(name: String): Boolean {
         return teams.stream().filter { it.displayName.equals(name, ignoreCase = true) }.findFirst().orElse(null) != null
     }
 
     fun pull() {
-        ForkJoinPool.commonPool().execute {
-            teams = mongoCollection.find().into(ArrayList()).map { deserialize(it) }.toCollection(ArrayList())
-        }
+        teams = mongoCollection.find().into(ArrayList()).map { deserialize(it) }.toCollection(ArrayList())
     }
 
     fun disbandTeam(team: Team) {
@@ -59,9 +57,23 @@ class TeamHandler {
         pull()
     }
 
-    fun createTeam(team: Team) {
+
+    fun createSystemTeam(team: Team) {
         save(team)
-        pull()
+    }
+
+    fun addDTRAndMemberToTeam(player: Player) {
+        val team = HCF.instance.teamHandler.byUUID(player.uniqueId)
+
+        team!!.members.add(player.uniqueId.toString())
+        team.dtr = team.calculateMaximumDTR()
+
+        save(team)
+    }
+
+    fun createTeam(team: Team) {
+
+        save(team)
     }
 
     fun save(team: Team) {
@@ -72,10 +84,9 @@ class TeamHandler {
         val finaldoc = Document("\$set", doc)
 
         mongoCollection.updateOne(query, finaldoc, UpdateOptions().upsert(true))
-        pull()
     }
 
-    fun deserialize(document: Document) : Team {
+    fun deserialize(document: Document): Team {
         return HCF.instance.gson.fromJson(document.toJson(), Team::class.java)
     }
 

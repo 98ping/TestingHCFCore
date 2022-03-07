@@ -39,7 +39,7 @@ class SystemTeamCommands {
             ArrayList()
         )
 
-        HCF.instance.teamHandler.createTeam(systeam)
+        HCF.instance.teamHandler.createSystemTeam(systeam)
         player.sendMessage(Chat.format("&aCreated a system team with the name &f$name"))
     }
 

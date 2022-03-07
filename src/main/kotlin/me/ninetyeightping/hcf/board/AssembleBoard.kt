@@ -35,15 +35,15 @@ class AssembleBoard : AssembleAdapter {
         lines.add("&6&lClaim: &r" + HCF.instance.landBoard.getClaimForScoreboard(player))
 
         if (EnderpearlTimer.hasCooldown(player)) {
-            lines.add("&9Enderpearl: &f" + getPearlScore(player))
+            lines.add("&9&lEnderpearl: &f" + getPearlScore(player))
         }
 
         if (FHomeTimer.hasCooldown(player)) {
-            lines.add("&bHome: &f" + getHomeScore(player))
+            lines.add("&3&lHome: &f" + getHomeScore(player))
         }
 
         if (CombatTimer.hasCooldown(player)) {
-            lines.add("&4Combat: &f" + getCombatScore(player))
+            lines.add("&c&lCombat: &f" + getCombatScore(player))
         }
         if (Archer.isInArcherClass(player)) {
             lines.add("&eActive Class: &5Archer")
@@ -82,7 +82,7 @@ class AssembleBoard : AssembleAdapter {
         val diff =
             CombatTimer.cooldownMap[player!!.uniqueId]?.minus(System.currentTimeMillis())
         if (diff!! > 0) {
-            return TimeUtils.formatIntoAbbreviatedString((diff / 1000L).toInt())
+            return TimeUtils.formatIntoMMSS((diff / 1000L).toInt())
         }
         return null
     }
@@ -91,7 +91,7 @@ class AssembleBoard : AssembleAdapter {
         val diff =
             FHomeTimer.cooldownMap[player!!.uniqueId]?.minus(System.currentTimeMillis())
         if (diff!! > 0) {
-            return TimeUtils.formatIntoAbbreviatedString((diff / 1000L).toInt())
+            return TimeUtils.formatIntoMMSS((diff / 1000L).toInt())
         }
         return null
     }
@@ -102,7 +102,7 @@ class AssembleBoard : AssembleAdapter {
         val diff =
             EffectCooldownTimer.cooldownMap[player!!.uniqueId]?.minus(System.currentTimeMillis())
         if (diff!! > 0) {
-            return TimeUtils.formatIntoAbbreviatedString((diff / 1000L).toInt())
+            return TimeUtils.formatIntoMMSS((diff / 1000L).toInt())
         }
         return null
     }
@@ -111,7 +111,7 @@ class AssembleBoard : AssembleAdapter {
         val diff =
             EnderpearlTimer.cooldownMap[player!!.uniqueId]?.minus(System.currentTimeMillis())
         if (diff!! > 0) {
-            return TimeUtils.formatIntoAbbreviatedString((diff / 1000L).toInt())
+            return TimeUtils.formatIntoMMSS((diff / 1000L).toInt())
         }
         return null
     }
@@ -119,7 +119,7 @@ class AssembleBoard : AssembleAdapter {
     fun getTimerScore(time: Long): String? {
         val diff = time - System.currentTimeMillis()
         return if (diff > 0) {
-            TimeUtils.formatIntoAbbreviatedString((diff / 1000L).toInt())
+            TimeUtils.formatIntoMMSS((diff / 1000L).toInt())
         } else {
             null
         }

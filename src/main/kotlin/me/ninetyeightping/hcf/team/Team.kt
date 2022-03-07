@@ -88,7 +88,7 @@ data class Team(
         //copied this over to team
         val team = this
         sendTo.sendMessage(Chat.format("&7&m-------------------"))
-        sendTo.sendMessage(Chat.format("&6${team.displayName} &7[" + team.members.stream().filter { Objects.nonNull(Bukkit.getPlayer(UUID.fromString(it))) }.count() + "/" + team.members.size + "&7]"))
+        sendTo.sendMessage(Chat.format("&9${team.displayName} &7[" + team.members.stream().filter { Objects.nonNull(Bukkit.getPlayer(UUID.fromString(it))) }.count() + "/" + team.members.size + "&7]"))
         sendTo.sendMessage(
             Chat.format(
                 "&eLeader: &f" + HCF.instance.playerHandler
