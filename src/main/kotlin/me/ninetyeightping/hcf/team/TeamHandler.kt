@@ -62,10 +62,9 @@ class TeamHandler {
         save(team)
     }
 
-    fun addDTRAndMemberToTeam(player: Player) {
-        val team = HCF.instance.teamHandler.byUUID(player.uniqueId)
+    fun addDTRAndMemberToTeam(player: Player, team: Team) {
 
-        team!!.members.add(player.uniqueId.toString())
+        team.members.add(player.uniqueId.toString())
         team.dtr = team.calculateMaximumDTR()
 
         save(team)
