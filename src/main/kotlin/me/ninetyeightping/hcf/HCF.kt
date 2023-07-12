@@ -73,7 +73,6 @@ class HCF : JavaPlugin() {
     lateinit var kothHandler: KothHandler
     lateinit var landBoard: LandBoard
     lateinit var playerHandler: HCFPlayerHandler
-    //need this for initialization of landboard. Beans dont work when it depends on itself
     lateinit var teamHandler: TeamHandler
 
 

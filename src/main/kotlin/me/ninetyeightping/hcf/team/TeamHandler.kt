@@ -7,13 +7,11 @@ import me.ninetyeightping.hcf.HCF
 import me.ninetyeightping.hcf.team.claims.LandBoard
 import org.bson.Document
 import org.bukkit.entity.Player
-import org.springframework.stereotype.Service
 import java.util.*
 import java.util.concurrent.ForkJoinPool
 import kotlin.collections.ArrayList
 
 
-@Service
 class TeamHandler {
 
     val mongoCollection: MongoCollection<Document> = HCF.instance.mongoDatabase.getCollection("teams")

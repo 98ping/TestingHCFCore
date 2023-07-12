@@ -8,10 +8,8 @@ import me.ninetyeightping.hcf.util.Cuboid
 import org.bukkit.Location
 import org.bukkit.World
 import org.bukkit.entity.Player
-import org.springframework.stereotype.Service
 import java.util.*
 
-@Service
 class LandBoard {
 
     //pure mortal claiming
@@ -25,8 +23,6 @@ class LandBoard {
     val WARZONE_BORDER = 3000
 
     init {
-
-        //thank you spring beans
         for (team in HCF.instance.teamHandler.teams) {
             team.claims.forEach {
                 claims[it] = team

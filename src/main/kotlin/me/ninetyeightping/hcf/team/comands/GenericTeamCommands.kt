@@ -361,7 +361,6 @@ class GenericTeamCommands {
         HCF.instance.teamHandler.createTeam(team)
         HCF.instance.teamHandler.addDTRAndMemberToTeam(player, team)
         player.sendMessage(Chat.format("&eCreated a team with the name of $name"))
-
     }
 
     @Command(value = ["team disband", "f disband", "t disband"])
