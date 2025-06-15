@@ -4,60 +4,60 @@ import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.UpdateOptions
 import me.ninetyeightping.hcf.HCF
+import me.ninetyeightping.hcf.toHCFPlayer
 import org.bson.Document
 import org.bukkit.entity.Player
 import java.util.*
-import java.util.concurrent.ForkJoinPool
+import java.util.concurrent.CompletableFuture
 
-class HCFPlayerHandler {
+class HCFPlayerHandler
+{
 
-    val mongoCollection: MongoCollection<Document> = HCF.instance.mongoDatabase.getCollection("hcfplayers")
+    private val mongoCollection: MongoCollection<Document> = HCF.instance.mongoDatabase.getCollection("hcfplayers")
+    private var hcfplayers = mutableMapOf<UUID, HCFPlayer>()
 
-    var hcfplayers = arrayListOf<HCFPlayer>()
-
-    init {
-        for (document in mongoCollection.find()) hcfplayers.add(serialize(document))
+    fun byPlayer(player: Player): HCFPlayer?
+    {
+        return byUUID(player.uniqueId)
     }
 
-
-    fun byPlayer(player: Player) : HCFPlayer? {
-        return hcfplayers.stream().filter { it.uuid == player.uniqueId.toString() }.findFirst().orElse(null)
+    fun byPlayerName(name: String): HCFPlayer?
+    {
+        return hcfplayers.values.firstOrNull { it.name.equals(name, true) }
     }
 
-    fun byPlayerName(name: String) : HCFPlayer? {
-        return hcfplayers.stream().filter { it.name == name }.findFirst().orElse(null)
+    fun byUUID(uuid: UUID): HCFPlayer?
+    {
+        return hcfplayers[uuid] ?: fromMongo(uuid)
     }
 
-    fun byUUID(uuid: UUID) : HCFPlayer? {
-        return hcfplayers.stream().filter { it.uuid == uuid.toString() }.findFirst().orElse(null)
+    private fun fromMongo(uuid: UUID): HCFPlayer?
+    {
+        return mongoCollection.find(Filters.eq("uuid", uuid)).firstOrNull()?.toHCFPlayer()
     }
 
-    fun pull() {
-        ForkJoinPool.commonPool().execute {
-            hcfplayers.clear()
-            for (document in mongoCollection.find()) hcfplayers.add(serialize(document))
+    fun createPlayer(hcfplayer: HCFPlayer)
+    {
+        save(hcfplayer)
+    }
+
+    fun cache(player: HCFPlayer)
+    {
+        hcfplayers[player.uuid] = player
+    }
+
+    fun save(hcfplayer: HCFPlayer)
+    {
+        CompletableFuture.runAsync {
+            val doc = Document.parse(hcfplayer.construct())
+            doc.remove("_id")
+
+            val query = Document("_id", hcfplayer.uuid)
+            val finaldoc = Document("\$set", doc)
+
+            mongoCollection.updateOne(query, finaldoc, UpdateOptions().upsert(true))
+        }.thenAccept {
+            hcfplayers[hcfplayer.uuid] = hcfplayer
         }
     }
-
-    fun createPlayer(hcfplayer: HCFPlayer) {
-        save(hcfplayer)
-        pull()
-    }
-
-    fun save(hcfplayer: HCFPlayer) {
-        val doc = Document.parse(hcfplayer.construct())
-        doc.remove("_id")
-
-        val query = Document("_id", hcfplayer.uuid)
-        val finaldoc = Document("\$set", doc)
-
-        mongoCollection.updateOne(query, finaldoc, UpdateOptions().upsert(true))
-        pull()
-    }
-
-    fun serialize(document: Document) : HCFPlayer {
-        return HCF.instance.gson.fromJson(document.toJson(), HCFPlayer::class.java)
-    }
-
-
 }

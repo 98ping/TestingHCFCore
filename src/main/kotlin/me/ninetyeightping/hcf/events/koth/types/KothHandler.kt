@@ -11,7 +11,6 @@ import java.util.concurrent.ForkJoinPool
 class KothHandler {
 
     val mongoCollection: MongoCollection<Document> = HCF.instance.mongoDatabase.getCollection("koths")
-
     var koths = arrayListOf<Koth>()
 
     init {

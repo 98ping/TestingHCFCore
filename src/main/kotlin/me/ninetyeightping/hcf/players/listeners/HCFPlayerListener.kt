@@ -14,6 +14,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.entity.ProjectileLaunchEvent
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import java.util.concurrent.ThreadLocalRandom
@@ -58,8 +59,8 @@ class HCFPlayerListener : Listener {
                 println("HCFPlayer for killer is null.")
                 return
             }
-            hcfplayerForKiller.stats.kills = hcfplayerForKiller.stats.kills + 1
-            hcfplayerForKiller.stats.killstreak = hcfplayerForKiller.stats.killstreak + 1
+            hcfplayerForKiller.stats.kills += 1
+            hcfplayerForKiller.stats.killstreak += 1
             hcfplayerForKiller.push()
         }
     }
@@ -77,12 +78,15 @@ class HCFPlayerListener : Listener {
     }
 
     @EventHandler
-    fun join(event: PlayerJoinEvent) {
-        val player = event.player;
+    fun join(event: AsyncPlayerPreLoginEvent) {
+        val hcfPlayer = HCF.instance.playerHandler.byUUID(event.uniqueId)
 
-        if (HCF.instance.playerHandler.byPlayer(player) == null) {
-            val hcfPlayer = HCFPlayer(player.uniqueId.toString(), player.name, 0.0, StatisticEntry(0, 0, 0, 0))
-            HCF.instance.playerHandler.createPlayer(hcfPlayer)
+        if (hcfPlayer == null)
+        {
+            HCF.instance.playerHandler.createPlayer(HCFPlayer(event.uniqueId, event.name))
+            return
         }
+
+        HCF.instance.playerHandler.cache(hcfPlayer)
     }
 }

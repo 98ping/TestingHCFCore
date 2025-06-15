@@ -1,5 +1,0 @@
-name: HCFCore
-main: me.ninetyeightping.hcf.HCF
-version: 1.1
-description: Lightweight HCF core made in kotlin meant for small - medium size servers
-author: Ping

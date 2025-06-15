@@ -81,7 +81,7 @@ class HCF : JavaPlugin() {
         instance = this
 
         mongoClient = MongoClient(MongoClientURI(config.getString("uri")))
-        mongoDatabase = mongoClient.getDatabase("HCFCoreTest")
+        mongoDatabase = mongoClient.getDatabase("HCFCore")
 
         sotwHandler = SOTWHandler()
         kothHandler = KothHandler()
@@ -91,15 +91,13 @@ class HCF : JavaPlugin() {
 
         val assemble = Assemble(this, AssembleBoard())
         assemble.ticks = 2
-        assemble.assembleStyle = AssembleStyle.VIPER
+        assemble.assembleStyle = AssembleStyle.MODERN
 
         startPvPClassTasks()
         registerEvents()
         registerCommands()
 
-
         (DTRUpdateTask()).runTaskTimerAsynchronously(this, 0L, 20L)
-
     }
 
     override fun onDisable() {
@@ -131,7 +129,6 @@ class HCF : JavaPlugin() {
             .register(SOTWCommands())
             .register(SystemTeamCommands())
             .register(KothGenericCommands())
-
     }
 
     fun startPvPClassTasks() {

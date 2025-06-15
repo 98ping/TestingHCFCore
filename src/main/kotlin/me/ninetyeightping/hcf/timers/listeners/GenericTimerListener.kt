@@ -22,8 +22,6 @@ class GenericTimerListener : Listener {
                 FHomeTimer.startingLocationMap.remove(player.uniqueId)
             }
         }
-
-
     }
 
     @EventHandler

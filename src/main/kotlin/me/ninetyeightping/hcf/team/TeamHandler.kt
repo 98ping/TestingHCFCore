@@ -23,13 +23,12 @@ class TeamHandler {
     }
 
     fun byPlayer(player: Player): Team? {
-        return teams.stream().filter { it.members.contains(player.uniqueId.toString()) }.findFirst().orElse(null)
+        return teams.stream().filter { it.members.contains(player.uniqueId) }.findFirst().orElse(null)
     }
 
     fun byUUID(uuid: UUID): Team? {
-        return teams.stream().filter { it.members.contains(uuid.toString()) }.findFirst().orElse(null)
+        return teams.stream().filter { it.members.contains(uuid) }.findFirst().orElse(null)
     }
-
 
     fun byName(name: String): Team? {
         return teams.stream().filter { it.displayName.equals(name, ignoreCase = true) }.findFirst().orElse(null)
@@ -62,7 +61,7 @@ class TeamHandler {
 
     fun addDTRAndMemberToTeam(player: Player, team: Team) {
 
-        team.members.add(player.uniqueId.toString())
+        team.members.add(player.uniqueId)
         team.dtr = team.calculateMaximumDTR()
 
         save(team)

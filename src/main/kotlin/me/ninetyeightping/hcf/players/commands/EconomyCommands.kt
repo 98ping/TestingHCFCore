@@ -29,9 +29,9 @@ class EconomyCommands {
         val hcfplayerTarget = HCF.instance.playerHandler.byPlayer(target)
 
         if (hcfplayerSender != null && hcfplayerTarget == null) {
-            sender.sendMessage(Chat.format("&c" + hcfplayerSender.name + "'s Balance: &f$" + hcfplayerSender.balance))
+            sender.sendMessage(Chat.format("&6" + hcfplayerSender.name + "'s Balance: &f$" + hcfplayerSender.balance))
         } else {
-            sender.sendMessage(Chat.format("&c" + hcfplayerTarget!!.name + "'s Balance: &f$" + hcfplayerTarget!!.balance))
+            sender.sendMessage(Chat.format("&6" + hcfplayerTarget!!.name + "'s Balance: &f$" + hcfplayerTarget!!.balance))
         }
     }
 }

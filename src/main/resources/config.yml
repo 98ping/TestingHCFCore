@@ -3,4 +3,4 @@ koth-won-command: "cr givekey %player% asd 1"
 kits: true
 
 scoreboard:
-  title: "&a&lMatrix Network"
+  title: "&c&lHCF"

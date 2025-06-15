@@ -1,6 +1,0 @@
-uri: "mongodb://localhost:27017"
-koth-won-command: "cr givekey %player% asd 1"
-kits: true
-
-scoreboard:
-  title: "&a&lMatrix Network"

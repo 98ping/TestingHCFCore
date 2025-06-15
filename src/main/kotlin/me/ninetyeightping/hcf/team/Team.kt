@@ -20,11 +20,11 @@ data class Team(
     var id: String,
     var displayName: String,
     var fakeName: String,
-    var members: ArrayList<String>,
-    var subLeaders: ArrayList<String>,
-    var leader: String?,
+    var members: ArrayList<UUID>,
+    var subLeaders: ArrayList<UUID>,
+    var leader: UUID?,
     var balance: Double,
-    var pendingInvites: ArrayList<String>,
+    var pendingInvites: ArrayList<UUID>,
     var needsSave: Boolean,
     var claims: ArrayList<Cuboid>,
     var teamLocation: Location?,
@@ -34,8 +34,6 @@ data class Team(
     var dtrregen: Long,
     var masks: ArrayList<Flag>
 ) {
-
-
 
     fun isRaidable() : Boolean {
         return dtr <= 0
@@ -78,21 +76,20 @@ data class Team(
     }
 
     fun sendGlobalTeamMessage(message: String) {
-        val players = members.map { Bukkit.getPlayer(UUID.fromString(it)) }.filter { Objects.nonNull(it) }
+        val players = members.map { Bukkit.getPlayer(it) }.filter { Objects.nonNull(it) }
             .toCollection(ArrayList())
 
         players.forEach { it.sendMessage(Chat.format(message)) }
     }
 
     fun sendTeamInfo(sendTo: Player) {
-        //copied this over to team
         val team = this
-        sendTo.sendMessage(Chat.format("&7&m-------------------"))
-        sendTo.sendMessage(Chat.format("&9${team.displayName} &7[" + team.members.stream().filter { Objects.nonNull(Bukkit.getPlayer(UUID.fromString(it))) }.count() + "/" + team.members.size + "&7]"))
+        sendTo.sendMessage(Chat.format("&7&m---------------------------------------"))
+        sendTo.sendMessage(Chat.format("&9${team.displayName} &7[" + team.members.stream().filter { Objects.nonNull(Bukkit.getPlayer(it)) }.count() + "/" + team.members.size + "&7]"))
         sendTo.sendMessage(
             Chat.format(
                 "&eLeader: &f" + HCF.instance.playerHandler
-                    .byUUID(UUID.fromString(team.leader))!!.name
+                    .byUUID(team.leader!!)?.name
             )
         )
         sendTo.sendMessage(
@@ -106,7 +103,7 @@ data class Team(
         if (dtrregen != 0L) {
             sendTo.sendMessage(Chat.format("&eDTR Regen: &f" + getDTRRegenScore(team.dtrregen)))
         }
-        sendTo.sendMessage(Chat.format("&7&m-------------------"))
+        sendTo.sendMessage(Chat.format("&7&m---------------------------------------"))
     }
 
     fun getDTRRegenScore(time: Long): String? {
@@ -127,7 +124,7 @@ data class Team(
 
         map.remove(leader)
         val playerlist =
-            map.stream().map { HCF.instance.playerHandler.byUUID(UUID.fromString(it)) }
+            map.stream().map { HCF.instance.playerHandler.byUUID(it) }
                 .collect(Collectors.toList()) as ArrayList<HCFPlayer?>
 
         return playerlist.stream().filter(Objects::nonNull).map { it!!.name }.collect(Collectors.toList())
@@ -135,13 +132,13 @@ data class Team(
 
     fun getNamedMembers(): MutableList<String> {
         val playerlist =
-            members.stream().map { HCF.instance.playerHandler.byUUID(UUID.fromString(it)) }
+            members.stream().map { HCF.instance.playerHandler.byUUID(it) }
                 .collect(Collectors.toList()) as ArrayList<HCFPlayer?>
         return playerlist.stream().filter(Objects::nonNull).map { it!!.name }.collect(Collectors.toList())
     }
 
     fun isMember(player: Player): Boolean {
-        return members.contains(player.uniqueId.toString())
+        return members.contains(player.uniqueId)
     }
 
     fun construct(): String {

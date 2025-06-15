@@ -27,9 +27,9 @@ class AssembleBoard : AssembleAdapter {
         if (hcfplayer != null) {
             val entry = hcfplayer.stats
             if (HCF.instance.config.getBoolean("kits")) {
-                lines.add("&4Kills&7: &f" + entry.kills)
-                lines.add("&4Deaths&7: &f" + entry.deaths)
-                lines.add("&4Killstreak&7: &f" + entry.killstreak)
+                lines.add("&3Kills&7: &f" + entry.kills)
+                lines.add("&3Deaths&7: &f" + entry.deaths)
+                lines.add("&3Killstreak&7: &f" + entry.killstreak)
             }
         }
         lines.add("&6&lClaim: &r" + HCF.instance.landBoard.getClaimForScoreboard(player))
@@ -95,8 +95,6 @@ class AssembleBoard : AssembleAdapter {
         }
         return null
     }
-
-
 
     fun getEffectScore(player: Player?): String? {
         val diff =
