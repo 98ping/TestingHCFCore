@@ -21,8 +21,6 @@ class LandBoardListener : Listener {
             } else {
                 player.sendMessage(Chat.format("&eNow Leaving: &aWilderness"))
             }
-
-
         }
 
 

@@ -14,8 +14,7 @@ import kotlin.collections.ArrayList
 
 class TeamHandler {
 
-    val mongoCollection: MongoCollection<Document> = HCF.instance.mongoDatabase.getCollection("teams")
-
+    private val mongoCollection: MongoCollection<Document> = HCF.instance.mongoDatabase.getCollection("teams")
     var teams = arrayListOf<Team>()
 
     init {
@@ -60,7 +59,6 @@ class TeamHandler {
     }
 
     fun addDTRAndMemberToTeam(player: Player, team: Team) {
-
         team.members.add(player.uniqueId)
         team.dtr = team.calculateMaximumDTR()
 
@@ -85,6 +83,5 @@ class TeamHandler {
     fun deserialize(document: Document): Team {
         return HCF.instance.gson.fromJson(document.toJson(), Team::class.java)
     }
-
 
 }

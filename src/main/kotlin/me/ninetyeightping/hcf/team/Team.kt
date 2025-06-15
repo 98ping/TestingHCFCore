@@ -57,7 +57,7 @@ data class Team(
         }
 
         if (isMember(player)) {
-            return "&2$fakeName"
+            return "&a$fakeName"
         }
 
         if (!isMember(player)) {
@@ -70,7 +70,7 @@ data class Team(
     fun registerPlayerDeath(player: Player) {
         dtr = (dtr - 1.1)
         dtrregen = System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1)
-        sendGlobalTeamMessage("&c" + player.name + " &chas died and lost you &f1.1 DTR")
+        sendGlobalTeamMessage("&e" + player.name + " &chas died and lost you &e1.1 DTR")
         sendGlobalTeamMessage("&cNew DTR: &f$dtr")
         save()
     }
@@ -84,7 +84,7 @@ data class Team(
 
     fun sendTeamInfo(sendTo: Player) {
         val team = this
-        sendTo.sendMessage(Chat.format("&7&m---------------------------------------"))
+        sendTo.sendMessage(Chat.format("&7&m-----------------------------------"))
         sendTo.sendMessage(Chat.format("&9${team.displayName} &7[" + team.members.stream().filter { Objects.nonNull(Bukkit.getPlayer(it)) }.count() + "/" + team.members.size + "&7]"))
         sendTo.sendMessage(
             Chat.format(
@@ -103,7 +103,7 @@ data class Team(
         if (dtrregen != 0L) {
             sendTo.sendMessage(Chat.format("&eDTR Regen: &f" + getDTRRegenScore(team.dtrregen)))
         }
-        sendTo.sendMessage(Chat.format("&7&m---------------------------------------"))
+        sendTo.sendMessage(Chat.format("&7&m-----------------------------------"))
     }
 
     fun getDTRRegenScore(time: Long): String? {
@@ -145,11 +145,9 @@ data class Team(
         return HCF.instance.gson.toJson(this)
     }
 
-
     fun save() {
         HCF.instance.teamHandler.save(this)
     }
-
 }
 
 

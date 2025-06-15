@@ -53,11 +53,11 @@ class LandBoard {
     fun getClaimForScoreboard(player: Player): String {
         if (claimByLocation(player.location) != null) {
             val claim = claimByLocation(player.location)
-            return teamByClaim(claim!!)!!.globalDisplay(player)
+            return teamByClaim(claim!!)?.globalDisplay(player) ?: "None"
         } else if (claimByLocation(player.location) == null && isWarzone(player.location)) {
             return "&cWarzone"
         } else {
-            return "&aWilderness"
+            return "&2Wilderness"
         }
     }
 

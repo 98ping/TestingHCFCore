@@ -70,10 +70,10 @@ class GenericTeamCommands
 
         team.teamLocation = player.location
         team.save()
-        player.sendMessage(Chat.format("&aUpdated the &9F-Home &alocation"))
+        player.sendMessage(Chat.format("&aUpdated the &eHome &alocation"))
     }
 
-    @Command(value = ["f home", "team home", "t home"])
+    @Command(value = ["f home", "team home", "t home", "hq"])
     fun home(@Sender player: Player)
     {
         val team = HCF.instance.teamHandler.byPlayer(player)
@@ -104,7 +104,7 @@ class GenericTeamCommands
 
                 if (!FHomeTimer.hasCooldown(player))
                 {
-                    player.sendMessage(Chat.format("&cYour &bHome &ctimer was removed."))
+                    player.sendMessage(Chat.format("&cYour &eHome &ctimer was removed."))
                     cancel()
                 }
 
@@ -119,9 +119,8 @@ class GenericTeamCommands
 
                     else ->
                     {
-                        player.sendMessage(Chat.format("&eTeleporting to your HQ in &f${seconds + 1} Seconds"))
+                        player.sendMessage(Chat.format("&eTeleporting to your HQ in &f${10-(seconds+1)} Seconds"))
                     }
-
                 }
 
                 seconds++
@@ -205,13 +204,11 @@ class GenericTeamCommands
         val hcf = HCF.instance.playerHandler.byPlayerName(player)
         val factionByPlayer = HCF.instance.teamHandler.byUUID(hcf!!.uuid)
 
-
         if (factionByPlayer != null)
         {
             factionByPlayer.sendTeamInfo(sender)
             return
         }
-
 
         sender.sendMessage(Chat.format("&cFaction not found"))
     }

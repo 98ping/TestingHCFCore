@@ -39,7 +39,7 @@ class AssembleBoard : AssembleAdapter {
         }
 
         if (FHomeTimer.hasCooldown(player)) {
-            lines.add("&3&lHome: &f" + getHomeScore(player))
+            lines.add("&e&lHome: &f" + getHomeScore(player))
         }
 
         if (CombatTimer.hasCooldown(player)) {

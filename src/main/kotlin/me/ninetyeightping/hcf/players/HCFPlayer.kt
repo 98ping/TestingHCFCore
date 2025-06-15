@@ -8,9 +8,8 @@ data class HCFPlayer(
     var uuid: UUID,
     var name: String,
     var balance: Double = 0.0,
-    var stats: StatisticEntry = StatisticEntry(0, 0, 0, 0),
+    var stats: StatisticEntry = StatisticEntry(),
 ) {
-
 
     fun construct() : String {
         return HCF.instance.gson.toJson(this)

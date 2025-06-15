@@ -33,7 +33,7 @@ class HCFPlayerHandler
 
     private fun fromMongo(uuid: UUID): HCFPlayer?
     {
-        return mongoCollection.find(Filters.eq("uuid", uuid)).firstOrNull()?.toHCFPlayer()
+        return mongoCollection.find(Filters.eq("_id", uuid.toString())).firstOrNull()?.toHCFPlayer()
     }
 
     fun createPlayer(hcfplayer: HCFPlayer)
@@ -52,7 +52,7 @@ class HCFPlayerHandler
             val doc = Document.parse(hcfplayer.construct())
             doc.remove("_id")
 
-            val query = Document("_id", hcfplayer.uuid)
+            val query = Document("_id", hcfplayer.uuid.toString())
             val finaldoc = Document("\$set", doc)
 
             mongoCollection.updateOne(query, finaldoc, UpdateOptions().upsert(true))

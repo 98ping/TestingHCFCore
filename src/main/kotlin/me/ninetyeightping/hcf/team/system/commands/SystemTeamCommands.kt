@@ -100,8 +100,8 @@ class SystemTeamCommands {
         val team = HCF.instance.teamHandler.byName(name)
         team!!.color = color
         team.save()
-        player.sendMessage(Chat.format("&aUpdated color of $name"))
 
+        player.sendMessage(Chat.format("&aUpdated color of $name"))
         HCF.instance.landBoard.refreshTeams()
     }
 

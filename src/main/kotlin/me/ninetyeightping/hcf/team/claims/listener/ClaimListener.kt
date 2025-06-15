@@ -73,7 +73,6 @@ class ClaimListener : Listener {
 
         @EventHandler
         fun tryAndTakeDamageInSpawnRegion(event: EntityDamageEvent) {
-
             val claimByLocation = HCF.instance.landBoard.claimByLocation(event.entity.location) ?: return
 
             val teamByClaimLocation = HCF.instance.landBoard.teamByClaim(claimByLocation) ?: return
@@ -81,7 +80,6 @@ class ClaimListener : Listener {
             if (teamByClaimLocation.masks.contains(Flag.SAFEZONE)) {
                 event.isCancelled = true
             }
-
         }
 
         @EventHandler
@@ -107,42 +105,34 @@ class ClaimListener : Listener {
             val player = event.player;
 
             if (player.itemInHand.isSimilar(claimWand)) {
-                val team = HCF.instance.teamHandler.byPlayer(player)
-                if (team == null) return
+                val team = HCF.instance.teamHandler.byPlayer(player) ?: return
+
                 if (event.action == Action.LEFT_CLICK_BLOCK) {
 
                     event.isCancelled = true
-
-                    var claimSession = HCF.instance.landBoard.sessions.getOrDefault(player.uniqueId, null)
-                    if (claimSession == null) return
+                    val claimSession = HCF.instance.landBoard.sessions.getOrDefault(player.uniqueId, null) ?: return
 
                     claimSession.position1 = event.clickedBlock.location
                     player.sendMessage(Chat.format("&aUpdated position 1 to &f(" + event.clickedBlock.location.blockX + ", " + event.clickedBlock.location.blockY + ", " + event.clickedBlock.location.blockZ + ")"))
-
-
+                    return
                 }
-                if (event.action == Action.RIGHT_CLICK_BLOCK) {
 
+                if (event.action == Action.RIGHT_CLICK_BLOCK) {
                     event.isCancelled = true
 
-                    var claimSession = HCF.instance.landBoard.sessions.getOrDefault(player.uniqueId, null)
-                    if (claimSession == null) return
+                    val claimSession = HCF.instance.landBoard.sessions.getOrDefault(player.uniqueId, null) ?: return
 
                     claimSession.position2 = event.clickedBlock.location
                     player.sendMessage(Chat.format("&aUpdated position 2 to &f(" + event.clickedBlock.location.blockX + ", " + event.clickedBlock.location.blockY + ", " + event.clickedBlock.location.blockZ + ")"))
-
-
+                    return
                 }
+
                 if (event.action == Action.LEFT_CLICK_AIR && player.isSneaking) {
 
                     event.isCancelled = true
-
-                    var claimSession = HCF.instance.landBoard.sessions.getOrDefault(player.uniqueId, null)
-                    if (claimSession == null) return
+                    val claimSession = HCF.instance.landBoard.sessions.getOrDefault(player.uniqueId, null) ?: return
 
                     if (claimSession.position1 != null && claimSession.position2 != null) {
-
-
                         val loc1 = claimSession.position1!!.clone()
                         loc1.y = 256.0
 
@@ -162,7 +152,6 @@ class ClaimListener : Listener {
 
                         val claim = Cuboid(loc1, loc2)
 
-
                         team.claims.add(claim)
                         HCF.instance.landBoard.claims[claim] = team
                         team.save()
@@ -171,11 +160,9 @@ class ClaimListener : Listener {
                         player.updateInventory()
                         HCF.instance.landBoard.sessions.remove(player.uniqueId)
                         player.sendMessage(Chat.format("&aAdded a team claim for " + team.displayName))
-
                     } else {
                         player.sendMessage(Chat.format("&cBoth claim positions must be set"))
                     }
-
                 }
             }
         }

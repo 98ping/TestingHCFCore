@@ -39,8 +39,6 @@ class ElevatorCreateListener : Listener {
             var toTeleportLocationFound: Location? = null
             var locationFound: Boolean = false
 
-
-
             for (y in event.clickedBlock.location.blockY..256) {
 
                 if (!locationFound) {
@@ -63,10 +61,6 @@ class ElevatorCreateListener : Listener {
                 return
             }
             player.teleport(toTeleportLocationFound)
-
-
         }
-
     }
-
 }
